@@ -33,3 +33,7 @@ sfBool testLClick(sfRenderWindow* _w) {
 	if (!sfMouse_isButtonPressed(sfMouseLeft)) return sfFalse;
 	return sfTrue;
 }
+
+int random(int _u) {
+	return rand() % _u;
+}

@@ -12,12 +12,13 @@
 #define TICK 1. / TICKSPEED
 
 #define PATH_TEXTURES "..\\Ressources\\Textures\\"
+#define PATH_LEVELS "..\\Ressources\\Levels\\"
 
 typedef enum Menu Menu;
-enum Menu
-{
+enum Menu {
 	MENU = 0,
-	GAME = 1,
+	GAME,
+	LOAD,
 	CREDITS
 };
 
@@ -45,3 +46,5 @@ sfBool testKeyPress(sfRenderWindow* _w, sfKeyCode _k);
 /// Checks if the user is left-clicking. Also tests for window focus.
 /// \param _w - Current window, for testing for focus
 sfBool testLClick(sfRenderWindow* _w);
+
+int random(int _u);
