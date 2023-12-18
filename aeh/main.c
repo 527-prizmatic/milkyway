@@ -21,7 +21,9 @@ int main() {
 	sfRenderWindow_setFramerateLimit(w, TICKSPEED);
 
 	/* == BACKDROP TEXTURES == */
-	sfTexture* bg_1 = newTexture(PATH_TEXTURES"res_test_1.png");
+	sfTexture* bg_1 = newTexture(PATH_TEXTURES"bg_galaxy.png");
+	sfTexture* bg_2 = newTexture(PATH_TEXTURES"bg_nebula.png");
+	sfTexture* bg_3 = newTexture(PATH_TEXTURES"bg_planet.png");
 	sfTexture* bg_main = newTexture(PATH_TEXTURES"backgroundMainMenu.jpg");
 	sfTexture* aeh = newTexture(PATH_TEXTURES"a.png");
 	sfTexture* grr = newTexture(PATH_TEXTURES"grr.png");
@@ -52,10 +54,8 @@ int main() {
 			tick = 0.f;
 			sfRenderWindow_clear(w, sfBlack);
 
-
-
 			displayMenu(w);
-			renderBackdrop(w, bg_main);
+			renderBackdrop(w, bg_1);
 	//		renderBackdrop(w, bg_1);
 	//		renderSprite(w, NULL, aeh, TEX_RECT_NULL, vector2f(8., 8.), vectorSnap(vector2f(mousePos.x, mousePos.y), 8));
 
@@ -64,10 +64,7 @@ int main() {
 
 			sfRenderWindow_display(w);
 		}
-
 	}
-
-
 
 	return 0;
 }
