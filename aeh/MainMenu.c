@@ -1,6 +1,6 @@
 #include "MainMenu.h"
 
-
+#define NUCLEARBOMB exit(EXIT_SUCCESS);
 
 /*sfSprite* SpritePlayMenu;
 sfTexture* TexturePlayMenu;
@@ -18,34 +18,39 @@ sfVector2f posTitre = { 400.0f, 200.0f };
 
 sfVector2i mousePosMenu;*/
 
-void initMenu(sfSprite* _spriteMainMenu, sfTexture* _textureMainMenu, sfVector2f _posMainMenu)
+void initMenu()
 {
 	
+}
+
+void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu _selectMenu) 
+{
 	
-	/*sfSprite_setTexture(SpriteBackgroundMenu, TextureBackgroundMenu, sfTrue);
-	sfSprite_setOrigin(SpriteBackgroundMenu, vector2f(sfSprite_getGlobalBounds(SpriteBackgroundMenu).width / 2, sfSprite_getGlobalBounds(SpriteBackgroundMenu).height / 2));
-	sfSprite_setPosition(SpriteBackgroundMenu, pos);*/
-	setupSprite(_spriteMainMenu, _textureMainMenu, {0, 0, 0, 0}, vector2f(sfSprite_getGlobalBounds(_spriteMainMenu).width / 2, sfSprite_getGlobalBounds(_spriteMainMenu).height / 2), 1, _posMainMenu);
+	sfFloatRect rectPlay = sfSprite_getGlobalBounds(_spritePressPlayUpdate);
+	sfFloatRect rectQuit = sfSprite_getGlobalBounds(_spriteQuitUpdate);
 
-	SpritePlayMenu = sfSprite_create();
-	TexturePlayMenu = sfTexture_createFromFile(TEXTURE_PATH"buttonStart.png", NULL);
-	sfSprite_setTexture(SpritePlayMenu, TexturePlayMenu, sfTrue);
-	sfSprite_setOrigin(SpritePlayMenu, vector2f(sfSprite_getGlobalBounds(SpritePlayMenu).width / 2, sfSprite_getGlobalBounds(SpritePlayMenu).height / 2));
-	sfSprite_setPosition(SpritePlayMenu, posPlay);
+	if (sfFloatRect_contains(&rectPlay, _mousePosMenu.x, _mousePosMenu.y))
+	{
+		if (sfMouse_isButtonPressed(sfMouseLeft))
+		{
+			_selectMenu = JOUER;
+			NUCLEARBOMB
+		}
+	}
+
+	if (sfFloatRect_contains(&rectQuit, _mousePosMenu.x, _mousePosMenu.y))
+	{
+		if (sfMouse_isButtonPressed(sfMouseLeft))
+		{
+			NUCLEARBOMB
+		}
+	}
 }
 
-void updateMenu(sfRenderWindow* _window)
+void displayMenu(sfRenderWindow* _window, sfTexture* _textureMainMenu, sfSprite* _spritePressPlay, sfSprite* _spriteQuit)
 {
 
-}
-
-void displayMenu(sfRenderWindow* _window, sfSprite* _spriteMainMenu)
-{
-	/*sfSprite_setOrigin(SpriteBackgroundMenu, vector2f(sfSprite_getGlobalBounds(SpriteBackgroundMenu).width / 2, sfSprite_getGlobalBounds(SpriteBackgroundMenu).height / 2));
-	sfSprite_setPosition(SpriteBackgroundMenu, pos);*/
-	sfRenderWindow_drawSprite(_window, _spriteMainMenu, NULL);
-
-	/*sfSprite_setOrigin(SpritePlayMenu, vector2f(sfSprite_getGlobalBounds(SpritePlayMenu).width / 2, sfSprite_getGlobalBounds(SpritePlayMenu).height / 2));
-	sfSprite_setPosition(SpritePlayMenu, posPlay);
-	sfRenderWindow_drawSprite(_window, SpritePlayMenu, NULL);*/
+	renderBackdrop(_window, _textureMainMenu);
+	sfRenderWindow_drawSprite(_window, _spritePressPlay, NULL);
+	sfRenderWindow_drawSprite(_window, _spriteQuit, NULL);
 }

@@ -3,6 +3,6 @@
 #include "vect.h"
 #include "render.h"
 
-void initMenu(sfSprite* _spriteMainMenu, sfTexture* _textureMainMenu, sfVector2f _posMainMenu);
-void updateMenu(sfRenderWindow* _window);
-void displayMenu(sfRenderWindow* _window, sfSprite* _spriteMainMenu);
+void initMenu();
+void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu _selectMenu);
+void displayMenu(sfRenderWindow* _window, sfTexture* _textureMainMenu, sfSprite* _spritePressPlay, sfSprite* _spriteQuit);
