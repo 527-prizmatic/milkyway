@@ -11,7 +11,7 @@
 #define TICKSPEED 20.
 #define TICK 1. / TICKSPEED
 
-#define PATH_TEXTURES "..\\Ressources\\Textures"
+#define PATH_TEXTURES "..\\Ressources\\Textures\\"
 
 /// Initializes misc tools for handling time.
 void initTools();

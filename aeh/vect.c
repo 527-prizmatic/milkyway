@@ -87,7 +87,7 @@ float pixelateFloat(float _val, int _px) {
 
 sfVector2f vectorSnap(sfVector2f _v, int _px) {
 	sfVector2f vecPx;
-	vecPx.x = pixelateFloat(_v.x, _px);
-	vecPx.y = pixelateFloat(_v.y, _px);
+	vecPx.x = pixelateFloat(_v.x + _px / 2, _px);
+	vecPx.y = pixelateFloat(_v.y + _px / 2, _px);
 	return vecPx;
 }
