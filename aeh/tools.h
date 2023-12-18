@@ -5,6 +5,11 @@
 #include <time.h>
 #include "SFML/Graphics.h"
 
+#define W_WINDOW 1920
+#define H_WINDOW 1080
+#define TICKSPEED 20.
+#define TICK 1. / TICKSPEED
+
 /// Initializes misc tools for handling time.
 void initTools();
 

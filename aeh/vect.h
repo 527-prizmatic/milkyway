@@ -6,6 +6,7 @@
 #include "tools.h"
 #include "SFML/Graphics.h"
 
+#define PI 3.1415926535
 #define DEG2RAD PI / 180.f
 #define RAD2DEG 180.f / PI
 
