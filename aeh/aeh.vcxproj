@@ -140,10 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="MainMenu.c" />
     <ClCompile Include="tools.c" />
     <ClCompile Include="vect.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="tools.h" />
     <ClInclude Include="vect.h" />
   </ItemGroup>
