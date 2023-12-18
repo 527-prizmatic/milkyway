@@ -7,7 +7,7 @@
 
 int main() {
 	initTools();
-
+	initMenu();
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
 
@@ -34,7 +34,7 @@ int main() {
 
 
 
-
+			displayMenu(w);
 			sfRenderWindow_display(w);
 		}
 
