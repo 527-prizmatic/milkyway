@@ -1,28 +1,56 @@
 #include "MainMenu.h"
 
-sfSprite* SpriteBackgroundMenu;
-sfTexture* TextureBackgroundMenu;
-sfVector2f pos = { 400.0f, 300.0f };
+#define NUCLEARBOMB exit(EXIT_SUCCESS);
 
+/*sfSprite* SpritePlayMenu;
+sfTexture* TexturePlayMenu;
+sfVector2f posPlay = { 960.0f, 540.0f };
+sfFloatRect rectPlay;
+
+sfSprite* SpriteQuitterMenu;
+sfTexture* TextureQuitterMenu;
+sfVector2f posQuitter = { 700.0f, 450.0f };
+sfFloatRect rectQuitter;
+
+sfSprite* SpriteTitreMenu;
+sfTexture* TextureTitreMenu;
+sfVector2f posTitre = { 400.0f, 200.0f };
+
+sfVector2i mousePosMenu;*/
 
 void initMenu()
 {
-	SpriteBackgroundMenu = sfSprite_create();
-	TextureBackgroundMenu = sfTexture_createFromFile(TEXTURE_PATH"backgroundMainMenu.jpg", NULL);
-	sfSprite_setTexture(SpriteBackgroundMenu, TextureBackgroundMenu, sfTrue);
-	sfSprite_setOrigin(SpriteBackgroundMenu, vector2f(sfSprite_getGlobalBounds(SpriteBackgroundMenu).width / 2, sfSprite_getGlobalBounds(SpriteBackgroundMenu).height / 2));
-	sfSprite_setPosition(SpriteBackgroundMenu, pos);
-	return SpriteBackgroundMenu;
+	
 }
 
-void updateMenu(sfRenderWindow* _window)
+void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu* _selectMenu) 
 {
+	
+	sfFloatRect rectPlay = sfSprite_getGlobalBounds(_spritePressPlayUpdate);
+	sfFloatRect rectQuit = sfSprite_getGlobalBounds(_spriteQuitUpdate);
 
+	if (sfFloatRect_contains(&rectPlay, _mousePosMenu.x, _mousePosMenu.y))
+	{
+		if (sfMouse_isButtonPressed(sfMouseLeft))
+		{
+			*_selectMenu = GAME;
+	//		NUCLEARBOMB
+		}
+	}
+
+	if (sfFloatRect_contains(&rectQuit, _mousePosMenu.x, _mousePosMenu.y))
+	{
+		if (sfMouse_isButtonPressed(sfMouseLeft))
+		{
+			NUCLEARBOMB
+		}
+	}
 }
 
-void displayMenu(sfRenderWindow* _window)
+void displayMenu(sfRenderWindow* _window, sfTexture* _textureMainMenu, sfSprite* _spritePressPlay, sfSprite* _spriteQuit)
 {
-	sfSprite_setOrigin(SpriteBackgroundMenu, vector2f(sfSprite_getGlobalBounds(SpriteBackgroundMenu).width / 2, sfSprite_getGlobalBounds(SpriteBackgroundMenu).height / 2));
-	sfSprite_setPosition(SpriteBackgroundMenu, pos);
-	sfRenderWindow_drawSprite(_window, SpriteBackgroundMenu, NULL);
+
+	renderBackdrop(_window, _textureMainMenu);
+	sfRenderWindow_drawSprite(_window, _spritePressPlay, NULL);
+	sfRenderWindow_drawSprite(_window, _spriteQuit, NULL);
 }

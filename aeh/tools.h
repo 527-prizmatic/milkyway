@@ -13,6 +13,16 @@
 
 #define PATH_TEXTURES "..\\Ressources\\Textures\\"
 
+typedef enum Menu Menu;
+enum Menu
+{
+	MENU = 0,
+	GAME = 1,
+	CREDITS
+};
+
+
+
 /// Initializes misc tools for handling time.
 void initTools();
 
