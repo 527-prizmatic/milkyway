@@ -6,7 +6,8 @@
 
 typedef enum {
 	PLAYER,
-	ENEMY_1
+	ENEMY_1,
+	ENEMY_2
 } BulletTypes;
 
 typedef struct {

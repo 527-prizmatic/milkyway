@@ -1,14 +1,15 @@
 #include "enemy.h"
 #include "render.h"
 
-#define ENEMY_SPD 6000.
+#define ENEMY_SPD 600.
 #define BULLET_SPD 200.
 
-void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p) {
+void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p, BulletTypes _type) {
 	_e->spr = sfSprite_create();
 	_e->tex = _t;
 	_e->pos.x = _p.x;
 	_e->pos.y = _p.y;
+	_e->type = _type;
 	_e->bullet = NULL;
 	_e->hasFired = 0;
 
@@ -20,7 +21,6 @@ void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p) {
 }
 
 void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c) {
-
 	if (_dir == 0) _e->pos.x -= ENEMY_SPD / (_c + 1) * TICK;
 	else if (_dir == 1) _e->pos.x += ENEMY_SPD / (_c + 1) * TICK;
 
@@ -28,7 +28,7 @@ void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c) {
 		_e->hasFired = 1;
 		_e->bullet = malloc(sizeof(Projectile));
 		if (_e->bullet == NULL) return;
-		initProjectile(_e->bullet, ENEMY_1, vector2f(_e->pos.x, _e->pos.y - 20.), 0);
+		initProjectile(_e->bullet, _e->type, vector2f(_e->pos.x + 32, _e->pos.y + 20.), 0);
 	}
 
 	// Bullet updates

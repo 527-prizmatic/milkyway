@@ -15,7 +15,8 @@ void initProjectile(Projectile* _p, BulletTypes _type, sfVector2f _pos, char _di
 
 sfTexture* projectileTextureByType(BulletTypes _t) {
 	switch (_t) {
-		case PLAYER: return sfTexture_createFromFile(PATH_TEXTURES"pew.png", NULL);
-		case ENEMY_1: return sfTexture_createFromFile(PATH_TEXTURES"unpew.png", NULL);
+		case PLAYER: return sfTexture_createFromFile(PATH_TEXTURES"bullet_plr.png", NULL);
+		case ENEMY_1: return sfTexture_createFromFile(PATH_TEXTURES"bullet_enemy_1.png", NULL);
+		case ENEMY_2: return sfTexture_createFromFile(PATH_TEXTURES"bullet_enemy_2.png", NULL);
 	}
 }

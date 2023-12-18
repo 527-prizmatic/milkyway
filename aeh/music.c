@@ -5,7 +5,7 @@ void initMusic()
 	
 }
 
-void updateMusic(Musique* _music, sfMusic* _musicMenuUpdate, sfMusic* _musicGameUpdate)
+void updateMusic(MusicState* _music, sfMusic* _musicMenuUpdate, sfMusic* _musicGameUpdate)
 {
 	if (*_music == MUSICMENU)
 	{
