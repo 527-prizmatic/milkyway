@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="enemy.c" />
+    <ClCompile Include="level.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="MainMenu.c" />
     <ClCompile Include="player.c" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="level.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
