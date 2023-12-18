@@ -18,13 +18,13 @@
 #define SOUND_PATH "../Ressources/SoundsFX/"
 
 
-typedef enum Menu Menu;
-enum Menu {
+typedef enum {
 	MENU = 0,
 	GAME,
 	LOAD,
+	DEATH,
 	CREDITS
-};
+} State;
 
 typedef enum Musique Musique;
 enum Musique

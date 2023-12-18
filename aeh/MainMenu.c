@@ -25,7 +25,7 @@ void initMenu()
 	
 }
 
-void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu* _selectMenu, char* _cbuf, Enemy* _ebuf) {
+void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, State* _selectMenu, char* _cbuf, Enemy* _ebuf) {
 	sfFloatRect rectPlay = sfSprite_getGlobalBounds(_spritePressPlayUpdate);
 	sfFloatRect rectQuit = sfSprite_getGlobalBounds(_spriteQuitUpdate);
 

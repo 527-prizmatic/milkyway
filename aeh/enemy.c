@@ -1,8 +1,8 @@
 #include "enemy.h"
 #include "render.h"
 
-#define ENEMY_SPD 600.
-#define BULLET_SPD 600.
+#define ENEMY_SPD 6000.
+#define BULLET_SPD 200.
 
 void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p) {
 	_e->spr = sfSprite_create();
@@ -22,7 +22,7 @@ void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p) {
 void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c) {
 
 	if (_dir == 0) _e->pos.x -= ENEMY_SPD / (_c + 1) * TICK;
-	else _e->pos.x += ENEMY_SPD / (_c + 1) * TICK;
+	else if (_dir == 1) _e->pos.x += ENEMY_SPD / (_c + 1) * TICK;
 
 	if (random(_c * _c) == 0 && !_e->hasFired) {
 		_e->hasFired = 1;
