@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "SFML/Graphics.h"
+#include "SFML/Audio.h"
 
 #define TEXTURE_PATH "../Ressources/Textures/" 
 #define W_WINDOW 1920
@@ -13,6 +14,9 @@
 
 #define PATH_TEXTURES "..\\Ressources\\Textures\\"
 #define PATH_LEVELS "..\\Ressources\\Levels\\"
+#define MUSIC_PATH "../Ressources/Musics/"
+#define SOUND_PATH "../Ressources/SoundsFX/"
+
 
 typedef enum {
 	MENU = 0,
@@ -22,6 +26,12 @@ typedef enum {
 	CREDITS
 } State;
 
+typedef enum Musique Musique;
+enum Musique
+{
+	MUSICMENU = 0,
+	MUSICGAME
+};
 
 
 /// Initializes misc tools for handling time.

@@ -67,6 +67,12 @@ int main() {
 	TextureBackgroundMenu = newTexture(TEXTURE_PATH"backgroundMainMenu.jpg");
 	sfVector2f oldPos;
 
+	sfMusic* musicMenu = sfMusic_createFromFile(MUSIC_PATH"Space-Invaders-Space-Invaders.ogg");
+	sfMusic* musicJouer = sfMusic_createFromFile(MUSIC_PATH"Stretch.ogg");
+	Musique music = MENU;
+	stopMusic(musicMenu, musicJouer);
+	updateMusic(&music, musicMenu, musicJouer);
+
 	while (sfRenderWindow_isOpen(w)) {
 		while (sfRenderWindow_pollEvent(w, &e));
 		restartClock();
@@ -103,6 +109,9 @@ int main() {
 						else enemyBuffer[i][j] = NULL;
 					}
 				}
+				music = MUSICGAME;
+				stopMusic(musicMenu, musicJouer);
+				updateMusic(&music, musicMenu, musicJouer);
 			}
 			else if (gameState == GAME) {
 				renderBackdrop(w, bg_1);
