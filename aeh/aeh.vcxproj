@@ -143,6 +143,7 @@
     <ClCompile Include="level.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="MainMenu.c" />
+    <ClCompile Include="music.c" />
     <ClCompile Include="player.c" />
     <ClCompile Include="projectile.c" />
     <ClCompile Include="render.c" />
@@ -153,6 +154,7 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="music.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="projectile.h" />
     <ClInclude Include="render.h" />
