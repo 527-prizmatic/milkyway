@@ -5,6 +5,7 @@
 #include <time.h>
 #include "SFML/Graphics.h"
 
+#define TEXTURE_PATH "../Ressources/Textures/" 
 #define W_WINDOW 1920
 #define H_WINDOW 1080
 #define TICKSPEED 20.
