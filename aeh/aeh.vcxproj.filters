@@ -39,7 +39,7 @@
     <ClCompile Include="enemy.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="music.c">
+    <ClCompile Include="level.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,7 +65,7 @@
     <ClInclude Include="enemy.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="music.h">
+    <ClInclude Include="level.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

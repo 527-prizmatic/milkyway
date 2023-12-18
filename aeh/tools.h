@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <time.h>
 #include "SFML/Graphics.h"
-#include "SFML/Audio.h"
 
 #define TEXTURE_PATH "../Ressources/Textures/" 
 #define W_WINDOW 1920
@@ -13,22 +12,16 @@
 #define TICK 1. / TICKSPEED
 
 #define PATH_TEXTURES "..\\Ressources\\Textures\\"
-#define MUSIC_PATH "../Ressources/Musics/"
+#define PATH_LEVELS "..\\Ressources\\Levels\\"
 
 typedef enum Menu Menu;
-enum Menu
-{
+enum Menu {
 	MENU = 0,
-	GAME = 1,
+	GAME,
+	LOAD,
 	CREDITS
 };
 
-typedef enum Musique Musique;
-enum Musique
-{
-	MUSICMENU = 0,
-	MUSICGAME
-};
 
 
 /// Initializes misc tools for handling time.
@@ -53,3 +46,5 @@ sfBool testKeyPress(sfRenderWindow* _w, sfKeyCode _k);
 /// Checks if the user is left-clicking. Also tests for window focus.
 /// \param _w - Current window, for testing for focus
 sfBool testLClick(sfRenderWindow* _w);
+
+int random(int _u);

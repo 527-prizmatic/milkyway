@@ -9,13 +9,16 @@
 #include "MainMenu.h"
 #include "player.h"
 #include "enemy.h"
+#include "level.h"
 
 int main() {
 	///***  = = =  PREINIT  = = =  ***///
 	ShowWindow(GetConsoleWindow(), 0);
 
 	initTools();
-	
+	initMenu();
+
+	char lvl_1[] = PATH_LEVELS"lv1.dat";
 
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
@@ -37,11 +40,15 @@ int main() {
 
 	float tick = 0., tickExit = 0.;
 	sfEvent e;
+	char levelBuffer[8][16];
+	Enemy* enemyBuffer[8][16];
+	char enemyMoveDir = 0;
+	int grid = (W_WINDOW * 0.75) / 20.;
+	sfVector2f mapBounds = vector2f(W_WINDOW * 0.125, W_WINDOW * 0.875 - grid);
+	int enemyCount = 0;
+	int dirChangeFlag = 0;
 
 	Menu selectMenu = MENU;
-	Musique music = MUSICMENU;
-
-
 	sfVector2i mousePos;
 
 	sfSprite* SpritePlayMenu = sfSprite_create();
@@ -56,11 +63,6 @@ int main() {
 
 	sfTexture* TextureBackgroundMenu;
 	TextureBackgroundMenu = newTexture(TEXTURE_PATH"backgroundMainMenu.jpg");
-
-	sfMusic* musicMenu = sfMusic_createFromFile(MUSIC_PATH"Geometry-Dash-Practice-Mode-Stay-Inside-Me-Soundtrack.ogg");
-	sfMusic* musicGame = sfMusic_createFromFile(MUSIC_PATH"Stretch.ogg");
-
-	initMenu(&music, musicMenu, musicGame);
 
 	while (sfRenderWindow_isOpen(w)) {
 		while (sfRenderWindow_pollEvent(w, &e));
@@ -81,22 +83,53 @@ int main() {
 
 			if (selectMenu == MENU)
 			{
-				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &selectMenu, &music, musicMenu, musicGame);
+				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &selectMenu, levelBuffer, enemyBuffer);
 				displayMenu(w, TextureBackgroundMenu, SpritePlayMenu, SpriteQuitMenu);
+			}
+			else if (selectMenu == LOAD) {
+				selectMenu = GAME;
+				readLevelFile(lvl_1, levelBuffer);
+
+				enemyCount = 0;
+				for (int i = 0; i < 8; i++) {
+					for (int j = 0; j < 16; j++) {
+						if (levelBuffer[i][j] == 1) {
+							enemyBuffer[i][j] = malloc(sizeof(Enemy));
+							initEnemy(enemyBuffer[i][j], grr, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2));
+							enemyCount++;
+						}
+						else enemyBuffer[i][j] = NULL;
+					}
+				}
 			}
 			else if (selectMenu == GAME)
 			{
 				renderBackdrop(w, bg_1);
-				//		renderSprite(w, NULL, aeh, TEX_RECT_NULL, vector2f(8., 8.), vectorSnap(vector2f(mousePos.x, mousePos.y), 8));
 				playerUpdate(&player, w);
-				enemyUpdate(&enemy, w);
+
+				for (int i = 0; i < 8; i++) {
+					for (int j = 0; j < 16; j++) {
+						if (enemyBuffer[i][j] != NULL) {
+							enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount);
+							if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
+							if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
+						}
+					}
+				}
+
+				if (dirChangeFlag == 1) {
+					dirChangeFlag = 0;
+					enemyMoveDir = 0;
+					for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL) enemyBuffer[i][j]->pos.y += 16;
+				}
+				else if (dirChangeFlag == -1) {
+					dirChangeFlag = 0;
+					enemyMoveDir = 1;
+					for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL) enemyBuffer[i][j]->pos.y += 16;
+				}
+				
 			}
 			
-
-			
-			
-			
-
 			sfRenderWindow_display(w);
 		}
 	}
