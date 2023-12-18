@@ -4,10 +4,19 @@
 
 #include "tools.h"
 #include "vect.h"
+#include "MainMenu.h"
+
+
 
 int main() {
+	
+	sfSprite* SpriteBackgroundMenu;
+	sfTexture* TextureBackgroundMenu;
+	sfVector2f pos = { 960.0f, 540.0f };
+	SpriteBackgroundMenu = sfSprite_create();
+	TextureBackgroundMenu = newTexture(TEXTURE_PATH"backgroundMainMenu.jpg");
 	initTools();
-	initMenu();
+	initMenu(SpriteBackgroundMenu, TextureBackgroundMenu, pos);
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
 
@@ -34,7 +43,7 @@ int main() {
 
 
 
-			displayMenu(w);
+			displayMenu(w, SpriteBackgroundMenu);
 			sfRenderWindow_display(w);
 		}
 
