@@ -48,8 +48,10 @@ int main() {
 	int enemyCount = 0;
 	int dirChangeFlag = 0;
 
-	Menu selectMenu = MENU;
+	State gameState = MENU;
 	sfVector2i mousePos;
+	int lives = 3;
+	int tickDeath = 0;
 
 	sfSprite* SpritePlayMenu = sfSprite_create();
 	sfTexture* TexturePlayMenu = newTexture(TEXTURE_PATH"buttonStart.png");
@@ -63,6 +65,7 @@ int main() {
 
 	sfTexture* TextureBackgroundMenu;
 	TextureBackgroundMenu = newTexture(TEXTURE_PATH"backgroundMainMenu.jpg");
+	sfVector2f oldPos;
 
 	while (sfRenderWindow_isOpen(w)) {
 		while (sfRenderWindow_pollEvent(w, &e));
@@ -81,13 +84,12 @@ int main() {
 			
 			sfRenderWindow_clear(w, sfBlack);
 
-			if (selectMenu == MENU)
-			{
-				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &selectMenu, levelBuffer, enemyBuffer);
+			if (gameState == MENU) {
+				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &gameState, levelBuffer, enemyBuffer);
 				displayMenu(w, TextureBackgroundMenu, SpritePlayMenu, SpriteQuitMenu);
 			}
-			else if (selectMenu == LOAD) {
-				selectMenu = GAME;
+			else if (gameState == LOAD) {
+				gameState = GAME;
 				readLevelFile(lvl_1, levelBuffer);
 
 				enemyCount = 0;
@@ -102,10 +104,10 @@ int main() {
 					}
 				}
 			}
-			else if (selectMenu == GAME)
-			{
+			else if (gameState == GAME) {
 				renderBackdrop(w, bg_1);
 				playerUpdate(&player, w);
+				tickDeath = -1;
 
 				for (int i = 0; i < 8; i++) {
 					for (int j = 0; j < 16; j++) {
@@ -128,6 +130,33 @@ int main() {
 					for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL) enemyBuffer[i][j]->pos.y += 16;
 				}
 				
+				if (enemyBuffer[7][0]->pos.y > 800) {
+					oldPos.x = enemyBuffer[0][0]->pos.x;
+					oldPos.y = enemyBuffer[0][0]->pos.y;
+					lives--;
+					gameState = DEATH;
+				}
+			}
+			else if (gameState == DEATH) {
+				renderBackdrop(w, bg_1);
+				for (int i = 0; i < 8; i++) {
+					for (int j = 0; j < 16; j++) {
+						if (enemyBuffer[i][j] != NULL) {
+							if (tickDeath < 40) {
+								enemyBuffer[i][j]->pos.x = lerp(oldPos.x + j * grid, W_WINDOW / 2, tickDeath / 40.);
+								enemyBuffer[i][j]->pos.y = lerp(oldPos.y + i * grid, H_WINDOW / 2, tickDeath / 40.);
+							}
+							else if (tickDeath < 80) {
+								enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
+								enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
+							}
+							enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount);
+						}
+					}
+				}
+				tickDeath++;
+
+				if (tickDeath == 120) gameState = GAME;
 			}
 			
 			sfRenderWindow_display(w);

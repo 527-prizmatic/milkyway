@@ -14,13 +14,13 @@
 #define PATH_TEXTURES "..\\Ressources\\Textures\\"
 #define PATH_LEVELS "..\\Ressources\\Levels\\"
 
-typedef enum Menu Menu;
-enum Menu {
+typedef enum {
 	MENU = 0,
 	GAME,
 	LOAD,
+	DEATH,
 	CREDITS
-};
+} State;
 
 
 
