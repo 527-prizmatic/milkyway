@@ -1,4 +1,5 @@
 #include "MainMenu.h"
+#include "music.h"
 
 #define NUCLEARBOMB exit(EXIT_SUCCESS);
 
@@ -18,12 +19,15 @@ sfVector2f posTitre = { 400.0f, 200.0f };
 
 sfVector2i mousePosMenu;*/
 
-void initMenu()
+void initMenu(Musique* _musicMenuInit, sfMusic* _musiqueMenuInit, sfMusic* _musiqueGameInit)
 {
-	
+	_musicMenuInit = MUSICMENU;
+
+	stopMusic(_musiqueMenuInit, _musiqueGameInit);
+	updateMusic(_musicMenuInit, _musiqueMenuInit, _musiqueGameInit);
 }
 
-void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu* _selectMenu) 
+void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu* _selectMenu, Musique* _musicMenuUpdate, sfMusic* _musiqueMenu, sfMusic* _musiqueGame)
 {
 	
 	sfFloatRect rectPlay = sfSprite_getGlobalBounds(_spritePressPlayUpdate);
@@ -33,6 +37,9 @@ void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSpr
 	{
 		if (sfMouse_isButtonPressed(sfMouseLeft))
 		{
+			*_musicMenuUpdate = MUSICGAME;
+			stopMusic(_musiqueMenu, _musiqueGame);
+			updateMusic(_musicMenuUpdate, _musiqueMenu, _musiqueGame);
 			*_selectMenu = GAME;
 	//		NUCLEARBOMB
 		}

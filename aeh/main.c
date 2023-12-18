@@ -15,7 +15,7 @@ int main() {
 	ShowWindow(GetConsoleWindow(), 0);
 
 	initTools();
-	initMenu();
+	
 
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
@@ -39,6 +39,8 @@ int main() {
 	sfEvent e;
 
 	Menu selectMenu = MENU;
+	Musique music = MUSICMENU;
+
 
 	sfVector2i mousePos;
 
@@ -54,6 +56,11 @@ int main() {
 
 	sfTexture* TextureBackgroundMenu;
 	TextureBackgroundMenu = newTexture(TEXTURE_PATH"backgroundMainMenu.jpg");
+
+	sfMusic* musicMenu = sfMusic_createFromFile(MUSIC_PATH"Geometry-Dash-Practice-Mode-Stay-Inside-Me-Soundtrack.ogg");
+	sfMusic* musicGame = sfMusic_createFromFile(MUSIC_PATH"Stretch.ogg");
+
+	initMenu(&music, musicMenu, musicGame);
 
 	while (sfRenderWindow_isOpen(w)) {
 		while (sfRenderWindow_pollEvent(w, &e));
@@ -74,7 +81,7 @@ int main() {
 
 			if (selectMenu == MENU)
 			{
-				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &selectMenu);
+				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &selectMenu, &music, musicMenu, musicGame);
 				displayMenu(w, TextureBackgroundMenu, SpritePlayMenu, SpriteQuitMenu);
 			}
 			else if (selectMenu == GAME)
