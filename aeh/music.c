@@ -2,7 +2,7 @@
 
 void initMusic()
 {
-
+	
 }
 
 void updateMusic(Musique* _music, sfMusic* _musicMenuUpdate, sfMusic* _musicGameUpdate)
