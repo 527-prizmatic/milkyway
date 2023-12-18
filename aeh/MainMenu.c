@@ -23,7 +23,7 @@ void initMenu()
 	
 }
 
-void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu _selectMenu) 
+void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, Menu* _selectMenu) 
 {
 	
 	sfFloatRect rectPlay = sfSprite_getGlobalBounds(_spritePressPlayUpdate);
@@ -33,8 +33,8 @@ void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSpr
 	{
 		if (sfMouse_isButtonPressed(sfMouseLeft))
 		{
-			_selectMenu = JOUER;
-			NUCLEARBOMB
+			*_selectMenu = GAME;
+	//		NUCLEARBOMB
 		}
 	}
 

@@ -69,16 +69,26 @@ int main() {
 			else tickExit = 0.f;
 
 			tick = 0.f;
-
-			updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, selectMenu);
-
+			
 			sfRenderWindow_clear(w, sfBlack);
-			displayMenu(w, TextureBackgroundMenu, SpritePlayMenu, SpriteQuitMenu);
-			renderBackdrop(w, bg_1);
-	//		renderBackdrop(w, bg_1);
-	//		renderSprite(w, NULL, aeh, TEX_RECT_NULL, vector2f(8., 8.), vectorSnap(vector2f(mousePos.x, mousePos.y), 8));
-			playerUpdate(&player, w);
-			enemyUpdate(&enemy, w);
+
+			if (selectMenu == MENU)
+			{
+				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &selectMenu);
+				displayMenu(w, TextureBackgroundMenu, SpritePlayMenu, SpriteQuitMenu);
+			}
+			else if (selectMenu == GAME)
+			{
+				renderBackdrop(w, bg_1);
+				//		renderSprite(w, NULL, aeh, TEX_RECT_NULL, vector2f(8., 8.), vectorSnap(vector2f(mousePos.x, mousePos.y), 8));
+				playerUpdate(&player, w);
+				enemyUpdate(&enemy, w);
+			}
+			
+
+			
+			
+			
 
 			sfRenderWindow_display(w);
 		}

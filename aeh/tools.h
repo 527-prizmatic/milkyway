@@ -17,7 +17,7 @@ typedef enum Menu Menu;
 enum Menu
 {
 	MENU = 0,
-	JOUER = 1,
+	GAME = 1,
 	CREDITS
 };
 
