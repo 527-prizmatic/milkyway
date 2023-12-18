@@ -53,3 +53,9 @@ float vectAngle(sfVector2f _a, sfVector2f _b);
 sfVector2f recToPol(sfVector2f _a);
 
 sfVector2f polToRec(sfVector2f _a);
+
+/// Rounds a number to the previous multiple of another number.
+float pixelateFloat(float _val, int _px);
+
+/// Snaps a vector to a pixel grid of given size.
+sfVector2f vectorSnap(sfVector2f _v, int _px);

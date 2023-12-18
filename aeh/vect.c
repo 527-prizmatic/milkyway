@@ -80,3 +80,14 @@ sfVector2f polToRec(sfVector2f _a) {
 	v.y = _a.x * sinf(_a.y);
 	return v;
 }
+
+float pixelateFloat(float _val, int _px) {
+	return _px * truncf(_val / _px);
+}
+
+sfVector2f vectorSnap(sfVector2f _v, int _px) {
+	sfVector2f vecPx;
+	vecPx.x = pixelateFloat(_v.x, _px);
+	vecPx.y = pixelateFloat(_v.y, _px);
+	return vecPx;
+}
