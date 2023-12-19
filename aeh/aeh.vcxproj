@@ -161,6 +161,9 @@
     <ClInclude Include="tools.h" />
     <ClInclude Include="vect.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaderProjectil.farg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
