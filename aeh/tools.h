@@ -15,6 +15,7 @@
 #define PATH_LEVELS "..\\data\\levels\\"
 #define PATH_MUSIC "..\\data\\audio\\bgm\\"
 #define PATH_SOUNDS "..\\data\\audio\\sfx\\"
+#define PATH_FRONT "..\\data\\front\\"
 
 typedef enum {
 	MENU = 0,

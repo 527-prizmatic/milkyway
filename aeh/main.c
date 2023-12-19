@@ -87,6 +87,15 @@ int main() {
 	sfSoundBuffer* soundBufferEnnemisShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-ennemis.ogg");
 	sfSound_setBuffer(soundEnnemisShoot, soundBufferEnnemisShoot);
 
+	///* == SCORE BOARD == *///
+	int scoreGame = 0;
+	sfText* score = sfText_create();
+	sfFont* scoreFront = sfFont_createFromFile(PATH_FRONT"8-bit-hud.ttf");
+	sfVector2f txtsize = { 0.8f, 0.8f };
+	sfVector2f txtPos = { 1600.0f, 50.0f };
+
+	char scoreChar[16];
+
 	///***  = = =  GAME LOOP  = = =  ***///
 	while (sfRenderWindow_isOpen(w)) {
 		while (sfRenderWindow_pollEvent(w, &e));
@@ -157,6 +166,12 @@ int main() {
 				playerUpdate(&player, w, soundPlayerShoot);
 				tickDeath = -1;
 				tickNext = -1;
+				sprintf(scoreChar,"%07d", scoreGame);
+				sfText_setFont(score, scoreFront);
+				sfText_setString(score, scoreChar);
+				sfText_setScale(score, txtsize);
+				sfText_setPosition(score, txtPos);
+				sfRenderWindow_drawText(w, score, NULL);
 
 				ITERATE_ALL_ENEMIES {
 					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot);
@@ -220,6 +235,7 @@ int main() {
 						sfFloatRect hitboxE = sfSprite_getGlobalBounds(enemyBuffer[i][j]->spr);
 						sfFloatRect hitboxB = sfSprite_getGlobalBounds(player.bullet->spr);
 						if (sfFloatRect_intersects(&hitboxE, &hitboxB, NULL)) {
+							scoreGame += 100;
 							destroyBulletPlayer(&player);
 							if (enemyBuffer[i][j]->hasFired) destroyBulletEnemy(enemyBuffer[i][j]);
 							free(enemyBuffer[i][j]);
