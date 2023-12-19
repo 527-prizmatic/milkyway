@@ -266,7 +266,7 @@ int main() {
 			/// Gamestate - WAITING FOR NEXT WAVE
 			else if (gameState == NEXT) {
 				renderBackdrop(w, bgCurrent);
-				playerUpdate(&player, w);
+				playerUpdate(&player, w, soundPlayerShoot);
 
 				tickNext++;
 				if (tickNext == 60) gameState = LOAD;
