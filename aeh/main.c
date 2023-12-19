@@ -124,13 +124,16 @@ int main() {
 	stopMusic(musicMenu, musicCurrent);
 	updateMusic(&music, musicMenu, musicCurrent);
 
-	sfSound* soundPlayerShoot = sfSound_create();
-	sfSoundBuffer* soundBufferPlayerShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-allie.ogg");
-	sfSound_setBuffer(soundPlayerShoot, soundBufferPlayerShoot);
+	sfSound* sndShootPlayer = sfSound_create();
+	sfSoundBuffer* sndBufShootPlayer = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-allie.ogg");
+	sfSound_setBuffer(sndShootPlayer, sndBufShootPlayer);
 
-	sfSound* soundEnnemisShoot = sfSound_create();
-	sfSoundBuffer* soundBufferEnnemisShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-ennemis.ogg");
-	sfSound_setBuffer(soundEnnemisShoot, soundBufferEnnemisShoot);
+	sfSound* sndShootEnemy = sfSound_create();
+	sfSoundBuffer* sndBufShootEnemy = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-ennemis.ogg");
+	sfSound_setBuffer(sndShootEnemy, sndBufShootEnemy);
+
+	sfSound_setVolume(sndShootPlayer, 12.5);
+	sfSound_setVolume(sndShootEnemy, 12.5);
 
 	///* == SCORE BOARD == *///
 	int scoreGame = 0;
@@ -240,7 +243,7 @@ int main() {
 			/// Gamestate - IN-GAME
 			else if (gameState == GAME) {
 				renderBackdrop(w, bgCurrent, &rstateBG);
-				playerUpdate(&player, w, soundPlayerShoot, &rstateBulletsP);
+				playerUpdate(&player, w, sndShootPlayer, &rstateBulletsP);
 				tickDeath = -1;
 				tickNext = -1;
 				sprintf(scoreChar,"%07d", scoreGame);
@@ -252,7 +255,7 @@ int main() {
 				enemyPos.x += ENEMY_SPD / (enemyCount + 1) * TICK * 2 * (enemyMoveDir - 0.5);
 
 				ITERATE_ALL_ENEMIES {
-					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot, &rstateBulletsE);
+					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, sndShootEnemy, &rstateBulletsE);
 					if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
 					if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
 
@@ -349,7 +352,7 @@ int main() {
 						enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
 						enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
 					}
-					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, soundEnnemisShoot, &rstateBulletsE);
+					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, sndShootEnemy, &rstateBulletsE);
 				}
 				tickDeath++;
 				enemyPos.y = 2 * grid;
@@ -380,7 +383,7 @@ int main() {
 			/// Gamestate - WAITING FOR NEXT WAVE
 			else if (gameState == NEXT) {
 				renderBackdrop(w, bgCurrent, &rstateBG);
-				playerUpdate(&player, w, soundPlayerShoot, &rstateBulletsP);
+				playerUpdate(&player, w, sndShootPlayer, &rstateBulletsP);
 
 				tickNext++;
 				if (tickNext == 60) gameState = LOAD;
