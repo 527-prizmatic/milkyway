@@ -12,10 +12,10 @@ void setupSprite(sfSprite* _sprite, sfTexture* _t, sfIntRect _r, sfVector2f _o, 
 	sfSprite_setPosition(_sprite, _p);
 }
 
-void renderBackdrop(sfRenderWindow* _w, sfTexture* _t) {
+void renderBackdrop(sfRenderWindow* _w, sfTexture* _t, sfRenderStates* _s) {
 	sfSprite* spr = sfSprite_create();
 	setupSprite(spr, _t, TEX_RECT_NULL, vector2f(0., 0.), SCALE_BACKDROPS, vector2f(0., 0.));
-	sfRenderWindow_drawSprite(_w, spr, NULL);
+	sfRenderWindow_drawSprite(_w, spr, _s);
 	sfSprite_destroy(spr);
 }
 

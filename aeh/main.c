@@ -22,6 +22,8 @@ int main() {
 	char lvl_1[] = PATH_LEVELS"lv1.dat";
 	char lvl_2[] = PATH_LEVELS"lv2.dat";
 	char lvl_3[] = PATH_LEVELS"lv3.dat";
+	char lvl_4[] = PATH_LEVELS"lv4.dat";
+	char lvl_5[] = PATH_LEVELS"lv5.dat";
 
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
@@ -32,9 +34,16 @@ int main() {
 	sfTexture* bgNebula = newTexture(PATH_TEXTURES"bg_nebula.png");
 	sfTexture* bgPlanet = newTexture(PATH_TEXTURES"bg_planet.png");
 	sfTexture* bgMain = newTexture(PATH_TEXTURES"bg_menu.png");
+	sfTexture* bgGO = newTexture(PATH_TEXTURES"GAMEOVER.png");
 	sfTexture* texPlayerShip = newTexture(PATH_TEXTURES"ship_proto.png");
 	sfTexture* texEnemy1 = newTexture(PATH_TEXTURES"enemy_1.png");
 	sfTexture* texEnemy2 = newTexture(PATH_TEXTURES"enemy_2.png");
+	sfTexture* texEnemy3 = newTexture(PATH_TEXTURES"enemy_3.png");
+	sfTexture* texEnemy4 = newTexture(PATH_TEXTURES"enemy_4.png");
+	sfTexture* texEnemy5 = newTexture(PATH_TEXTURES"enemy_5.png");
+	sfTexture* texEnemy6 = newTexture(PATH_TEXTURES"enemy_6.png");
+	sfTexture* texEnemy7 = newTexture(PATH_TEXTURES"enemy_7.png");
+	sfTexture* texEnemy8 = newTexture(PATH_TEXTURES"enemy_8.png");
 	sfTexture* texButtonStart = newTexture(PATH_TEXTURES"button_start.png");
 	sfTexture* texButtonQuit = newTexture(PATH_TEXTURES"button_quit.png");
 
@@ -48,7 +57,7 @@ int main() {
 
 	///* == MISC TECHNICAL VARS == *///
 	float tick = 0., tickExit = 0.; // Timers - 1
-	int tickDeath = 0, tickNext = 0; // Timers - 2
+	int tickDeath = 0, tickNext = 0, tickShaders = 0, tickGO = 0; // Timers - 2
 	sfEvent e; // Event handler
 	char levelBuffer[8][16]; // Contains level raw binary data
 	Enemy* enemyBuffer[8][16]; // Contains enemy objects
@@ -63,6 +72,44 @@ int main() {
 	int lives = 3; // Player's current lives
 	sfVector2f oldPos = vector2f(0., 0.); // Keeps track of where the enemy formation was for the death anim's initial lerp
 	char flagCheckCollisions = 1;
+
+	///* == SHADERS == *///
+	sfShader* shaderBulletsP = NULL;
+	sfRenderStates rstateBulletsP;
+	sfShader* shaderBulletsE = NULL;
+	sfRenderStates rstateBulletsE;
+	sfShader* shaderBG = NULL;
+	sfRenderStates rstateBG;
+	if (!sfShader_isAvailable()) {
+		printf("cususucdics");
+		return;
+	}
+	else {
+		shaderBulletsP = sfShader_createFromFile(NULL, NULL, PATH_SHADERS"bulletsp.frag");
+		if (shaderBulletsP == NULL) return;
+		rstateBulletsP.shader = shaderBulletsP;
+		rstateBulletsP.blendMode = sfBlendAlpha;
+		rstateBulletsP.transform = sfTransform_Identity;
+		rstateBulletsP.texture = NULL;
+
+		shaderBulletsE = sfShader_createFromFile(NULL, NULL, PATH_SHADERS"bulletse.frag");
+		if (shaderBulletsE == NULL) return;
+		rstateBulletsE.shader = shaderBulletsE;
+		rstateBulletsE.blendMode = sfBlendAlpha;
+		rstateBulletsE.transform = sfTransform_Identity;
+		rstateBulletsE.texture = NULL;
+
+		shaderBG = sfShader_createFromFile(NULL, NULL, PATH_SHADERS"bg.frag");
+		if (shaderBG == NULL) return;
+		rstateBG.shader = shaderBG;
+		rstateBG.blendMode = sfBlendAlpha;
+		rstateBG.transform = sfTransform_Identity;
+		rstateBG.texture = NULL;
+	}
+	sfShader_setVec2Uniform(shaderBulletsP, "uRes", vector2f(W_WINDOW, H_WINDOW));
+	sfShader_setVec2Uniform(shaderBulletsE, "uRes", vector2f(W_WINDOW, H_WINDOW));
+	sfShader_setVec2Uniform(shaderBG, "uRes", vector2f(W_WINDOW, H_WINDOW));
+
 
 	///* == MAIN MENU BUTTONS == *///
 	sfSprite* SpritePlayMenu = sfSprite_create();
@@ -111,7 +158,10 @@ int main() {
 			}
 			else tickExit = 0.f;
 			tick = 0.f;
-
+			tickShaders++;
+			sfShader_setIntUniform(shaderBulletsP, "uTime", tickShaders);
+			sfShader_setIntUniform(shaderBulletsE, "uTime", tickShaders);
+			sfShader_setIntUniform(shaderBG, "uTime", tickShaders);
 
 			/// Gamestate - MAIN MENU
 			if (gameState == MENU) {
@@ -127,28 +177,34 @@ int main() {
 				case 0: lvlCurrent = lvl_1; break;
 				case 1: lvlCurrent = lvl_2; break;
 				case 2: lvlCurrent = lvl_3; break;
+				case 3: lvlCurrent = lvl_4; break;
+				case 4: lvlCurrent = lvl_5; break;
 				}
+
 				int rb = random(3);
 				switch (rb) {
 				case 0: bgCurrent = bgGalaxy; break;
 				case 1: bgCurrent = bgNebula; break;
 				case 2: bgCurrent = bgPlanet; break;
 				}
+				sfShader_setTextureUniform(shaderBG, "texture", bgCurrent);
 
 				readLevelFile(lvlCurrent, levelBuffer);
 
 				enemyCount = 0;
 				for (int i = 0; i < 8; i++) {
 					for (int j = 0; j < 16; j++) {
-						if (levelBuffer[i][j] == 1) {
+						if (levelBuffer[i][j] != 0) {
 							enemyBuffer[i][j] = malloc(sizeof(Enemy));
-							initEnemy(enemyBuffer[i][j], texEnemy1, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_1);
 							enemyCount++;
-						}
-						else if (levelBuffer[i][j] == 2) {
-							enemyBuffer[i][j] = malloc(sizeof(Enemy));
-							initEnemy(enemyBuffer[i][j], texEnemy2, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_2);
-							enemyCount++;
+							if (levelBuffer[i][j] == 1) initEnemy(enemyBuffer[i][j], texEnemy1, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_1);
+							else if (levelBuffer[i][j] == 2) initEnemy(enemyBuffer[i][j], texEnemy2, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_2);
+							else if (levelBuffer[i][j] == 3) initEnemy(enemyBuffer[i][j], texEnemy3, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_3);
+							else if (levelBuffer[i][j] == 4) initEnemy(enemyBuffer[i][j], texEnemy4, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_4);
+							else if (levelBuffer[i][j] == 5) initEnemy(enemyBuffer[i][j], texEnemy5, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_5);
+							else if (levelBuffer[i][j] == 6) initEnemy(enemyBuffer[i][j], texEnemy6, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_6);
+							else if (levelBuffer[i][j] == 7) initEnemy(enemyBuffer[i][j], texEnemy7, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_7);
+							else if (levelBuffer[i][j] == 8) initEnemy(enemyBuffer[i][j], texEnemy8, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_8);
 						}
 						else enemyBuffer[i][j] = NULL;
 					}
@@ -162,8 +218,8 @@ int main() {
 
 			/// Gamestate - IN-GAME
 			else if (gameState == GAME) {
-				renderBackdrop(w, bgCurrent);
-				playerUpdate(&player, w, soundPlayerShoot);
+				renderBackdrop(w, bgCurrent, &rstateBG);
+				playerUpdate(&player, w, soundPlayerShoot, &rstateBulletsP);
 				tickDeath = -1;
 				tickNext = -1;
 				sprintf(scoreChar,"%07d", scoreGame);
@@ -174,7 +230,7 @@ int main() {
 				sfRenderWindow_drawText(w, score, NULL);
 
 				ITERATE_ALL_ENEMIES {
-					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot);
+					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot, &rstateBulletsE);
 					if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
 					if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
 
@@ -258,7 +314,7 @@ int main() {
 			/// Gamestate - DEATH TRANSITION
 			else if (gameState == DEATH) {
 				sfMusic_pause(musicGame);
-				renderBackdrop(w, bgCurrent);
+				renderBackdrop(w, bgCurrent, &rstateBG);
 				ITERATE_ALL_ENEMIES {
 					if (tickDeath < 40) {
 						enemyBuffer[i][j]->pos.x = lerp(oldPos.x + j * grid, W_WINDOW / 2, tickDeath / 40.);
@@ -268,7 +324,7 @@ int main() {
 						enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
 						enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
 					}
-					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, soundEnnemisShoot);
+					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, soundEnnemisShoot, &rstateBulletsE);
 				}
 				tickDeath++;
 				enemyPos.y = 2 * grid;
@@ -278,22 +334,31 @@ int main() {
 					sfMusic_play(musicGame);
 				}
 				else if (tickDeath == 120 && lives == 0) {
+					gameState = GAMEOVER;
+				}
+			}
+
+			/// Gamestate - GAME OVER
+			else if (gameState == GAMEOVER) {
+				renderBackdrop(w, bgGO, NULL);
+				if (tickGO > 100) {
 					gameState = MENU;
 					music = MUSICMENU;
 					stopMusic(musicMenu, musicGame);
 					updateMusic(&music, musicMenu, musicGame);
 				}
+				tickGO++;
 			}
 
 			/// Gamestate - WAITING FOR NEXT WAVE
 			else if (gameState == NEXT) {
-				renderBackdrop(w, bgCurrent);
-				playerUpdate(&player, w, soundPlayerShoot);
+				renderBackdrop(w, bgCurrent, &rstateBG);
+				playerUpdate(&player, w, soundPlayerShoot, &rstateBulletsP);
 
 				tickNext++;
 				if (tickNext == 60) gameState = LOAD;
 			}
-			
+
 			sfRenderWindow_display(w);
 		}
 	}
