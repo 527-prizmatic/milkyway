@@ -168,6 +168,8 @@ int main() {
 				case 0: lvlCurrent = lvl_1; break;
 				case 1: lvlCurrent = lvl_2; break;
 				case 2: lvlCurrent = lvl_3; break;
+				case 3: lvlCurrent = lvl_4; break;
+				case 4: lvlCurrent = lvl_5; break;
 				}
 
 				int rb = random(3);
