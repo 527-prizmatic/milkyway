@@ -73,11 +73,11 @@ int main() {
 	updateMusic(&music, musicMenu, musicGame);
 
 	sfSound* soundPlayerShoot = sfSound_create();
-	sfSoundBuffer* soundBufferPlayerShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-1-81135.ogg");
+	sfSoundBuffer* soundBufferPlayerShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-allie.ogg");
 	sfSound_setBuffer(soundPlayerShoot, soundBufferPlayerShoot);
 
 	sfSound* soundEnnemisShoot = sfSound_create();
-	sfSoundBuffer* soundBufferEnnemisShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-5-102360.ogg");
+	sfSoundBuffer* soundBufferEnnemisShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-ennemis.ogg");
 	sfSound_setBuffer(soundEnnemisShoot, soundBufferEnnemisShoot);
 
 	///***  = = =  GAME LOOP  = = =  ***///
