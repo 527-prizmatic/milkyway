@@ -46,8 +46,6 @@ int main() {
 	sfTexture* texEnemy6 = newTexture(PATH_TEXTURES"enemy_6.png");
 	sfTexture* texEnemy7 = newTexture(PATH_TEXTURES"enemy_7.png");
 	sfTexture* texEnemy8 = newTexture(PATH_TEXTURES"enemy_8.png");
-	sfTexture* texButtonStart = newTexture(PATH_TEXTURES"button_start.png");
-	sfTexture* texButtonQuit = newTexture(PATH_TEXTURES"button_quit.png");
 
 	///* == PLAYER INIT == *///
 	Player player;
@@ -113,14 +111,6 @@ int main() {
 	sfShader_setVec2Uniform(shaderBG, "uRes", vector2f(W_WINDOW, H_WINDOW));
 
 
-	///* == MAIN MENU BUTTONS == *///
-	sfSprite* SpritePlayMenu = sfSprite_create();
-	sfSprite* SpriteQuitMenu = sfSprite_create();
-	sfVector2f originPlay = vector2f(sfSprite_getGlobalBounds(SpritePlayMenu).width / 2, sfSprite_getGlobalBounds(SpritePlayMenu).height / 2);
-	sfVector2f originQuit = vector2f(sfSprite_getGlobalBounds(SpriteQuitMenu).width / 2, sfSprite_getGlobalBounds(SpriteQuitMenu).height / 2);
-	setupSprite(SpritePlayMenu, texButtonStart, TEX_RECT_NULL, originPlay, vector2f(0.5f, 0.5f), vector2f(460.0f, 740.0f));
-	setupSprite(SpriteQuitMenu, texButtonQuit, TEX_RECT_NULL, originQuit, vector2f(0.5f, 0.5f), vector2f(960.0f, 740.0f));
-
 	///* == MUSIC & SFX == *///
 	sfMusic* musicMenu = sfMusic_createFromFile(PATH_MUSIC"invaders.ogg");
 	sfMusic* musicGame = sfMusic_createFromFile(PATH_MUSIC"stretch.ogg");
@@ -143,8 +133,18 @@ int main() {
 	sfFont* scoreFront = sfFont_createFromFile(PATH_FRONT"8-bit-hud.ttf");
 	sfVector2f txtsize = { 0.8f, 0.8f };
 	sfVector2f txtPos = { 1600.0f, 50.0f };
-
 	char scoreChar[16];
+
+	///* == TEXT MAIN MENU == *///
+	sfText* PressSpace = sfText_create();
+	sfFont* PressSpaceFront = sfFont_createFromFile(PATH_FRONT"8-bit-hud.ttf");
+	sfVector2f PressSpacetxtsize = { 0.8f, 0.8f };
+	sfVector2f PressSpacetxtPos = { 810.0f, 840.0f };
+	char* PressSpaceChar = "Press Space";
+	sfText_setFont(PressSpace, PressSpaceFront);
+	sfText_setString(PressSpace, PressSpaceChar);
+	sfText_setScale(PressSpace, PressSpacetxtsize);
+	sfText_setPosition(PressSpace, PressSpacetxtPos);
 
 	///***  = = =  GAME LOOP  = = =  ***///
 	while (sfRenderWindow_isOpen(w)) {
@@ -168,8 +168,8 @@ int main() {
 
 			/// Gamestate - MAIN MENU
 			if (gameState == MENU) {
-				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &gameState, levelBuffer, enemyBuffer);
-				displayMenu(w, bgMain, SpritePlayMenu, SpriteQuitMenu);
+				updateMenu(w, &gameState);
+				displayMenu(w, bgMain, PressSpace);
 			}
 
 			/// Gamestate - LOADING NEXT WAVE

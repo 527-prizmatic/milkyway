@@ -20,24 +20,19 @@ sfVector2f posTitre = { 400.0f, 200.0f };
 
 sfVector2i mousePosMenu;*/
 
-void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSprite* _spriteQuitUpdate, sfVector2i _mousePosMenu, State* _selectMenu, char* _cbuf, Enemy* _ebuf) {
-	sfFloatRect rectPlay = sfSprite_getGlobalBounds(_spritePressPlayUpdate);
-	sfFloatRect rectQuit = sfSprite_getGlobalBounds(_spriteQuitUpdate);
-
-	if (sfFloatRect_contains(&rectPlay, _mousePosMenu.x, _mousePosMenu.y)) {
-		if (testLClick(_window)) {
-			*_selectMenu = LOAD;
-	//		NUCLEARBOMB
-		}
+void updateMenu(sfRenderWindow* _window, State* _selectMenu) {
+	if (testKeyPress(_window, sfKeySpace))
+	{
+		*_selectMenu = LOAD;
 	}
 
-	if (sfFloatRect_contains(&rectQuit, _mousePosMenu.x, _mousePosMenu.y)) {
-		if (testLClick(_window)) NUCLEARBOMB 
+	if (testKeyPress(_window, sfKeyEscape))
+	{
+		NUCLEARBOMB
 	}
 }
 
-void displayMenu(sfRenderWindow* _window, sfTexture* _textureMainMenu, sfSprite* _spritePressPlay, sfSprite* _spriteQuit) {
+void displayMenu(sfRenderWindow* _window, sfTexture* _textureMainMenu, sfText* _PressSpace) {
 	renderBackdrop(_window, _textureMainMenu, NULL);
-	sfRenderWindow_drawSprite(_window, _spritePressPlay, NULL);
-	sfRenderWindow_drawSprite(_window, _spriteQuit, NULL);
+	sfRenderWindow_drawText(_window, _PressSpace, NULL);
 }
