@@ -257,12 +257,11 @@ int main() {
 				tickDeath++;
 				enemyPos.y = 2 * grid;
 
-				if (tickDeath == 120 && lives >= 0) {
-					lives -= 1;
+				if (tickDeath == 120 && lives > 0) {
 					gameState = GAME;
 					sfMusic_play(musicGame);
 				}
-				else if (tickDeath == 120 && lives < 0) {
+				else if (tickDeath == 120 && lives == 0) {
 					gameState = MENU;
 					music = MUSICMENU;
 					stopMusic(musicMenu, musicGame);
