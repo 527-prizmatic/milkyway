@@ -23,7 +23,7 @@ void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfS
 	if (_dir == 0) _e->pos.x -= ENEMY_SPD / (_c + 1) * TICK;
 	else if (_dir == 1) _e->pos.x += ENEMY_SPD / (_c + 1) * TICK;
 
-	if (random(_c * _c) == 0 && !_e->hasFired && _s == GAME) {
+	if (random(_c * _c * 0.5 + 1) == 0 && !_e->hasFired && _s == GAME) {
 		_e->hasFired = 1;
 		_e->bullet = malloc(sizeof(Projectile));
 		if (_e->bullet == NULL) return;
