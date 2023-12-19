@@ -47,5 +47,5 @@ void playerUpdate(Player* _p, sfRenderWindow* _w, sfSound* _soundPlayerShoot) {
 
 void destroyBulletPlayer(Player* _p) {
 	_p->hasFired = 0;
-	free(_p->bullet);
+	if (_p->bullet != NULL) free(_p->bullet);
 }

@@ -5,4 +5,4 @@
 #include "vect.h"
 #include "render.h"
 
-void readLevelFile(char* _c, float* _buf);
+void readLevelFile(char* _c, char* _buf);

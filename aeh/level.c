@@ -1,6 +1,6 @@
 #include "level.h"
 
-void readLevelFile(char* _c, float* _buf) {
+void readLevelFile(char* _c, char* _buf) {
 	FILE* f = fopen(_c, "r");
 	if (f == NULL) return;
 

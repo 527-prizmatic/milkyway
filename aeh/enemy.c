@@ -20,11 +20,11 @@ void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p, BulletTypes _type) {
 	sfSprite_setScale(_e->spr, SCALE_SPRITES);
 }
 
-void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, sfSound* _soundEnnemisShoot) {
+void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfSound* _soundEnnemisShoot) {
 	if (_dir == 0) _e->pos.x -= ENEMY_SPD / (_c + 1) * TICK;
 	else if (_dir == 1) _e->pos.x += ENEMY_SPD / (_c + 1) * TICK;
 
-	if (random(_c * _c) == 0 && !_e->hasFired) {
+	if (random(_c * _c) == 0 && !_e->hasFired && _s == GAME) {
 		_e->hasFired = 1;
 		_e->bullet = malloc(sizeof(Projectile));
 		if (_e->bullet == NULL) return;
@@ -37,7 +37,7 @@ void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, sfSound* _sou
 		_e->bullet->pos.y += BULLET_SPD * TICK;
 		sfSprite_setPosition(_e->bullet->spr, _e->bullet->pos);
 		sfRenderWindow_drawSprite(_w, _e->bullet->spr, NULL);
-		if (_e->bullet->pos.y > 1000.) destroyBulletEnemy(_e);
+		if (_e->bullet->pos.y > 950.) destroyBulletEnemy(_e);
 	}
 
 	sfSprite_setPosition(_e->spr, vectorSnap(_e->pos, 4));
@@ -46,5 +46,5 @@ void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, sfSound* _sou
 
 void destroyBulletEnemy(Enemy* _e) {
 	_e->hasFired = 0;
-	free(_e->bullet);
+	if (_e->bullet != NULL) free(_e->bullet);
 }

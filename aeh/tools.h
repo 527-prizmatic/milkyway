@@ -22,6 +22,7 @@ typedef enum {
 	LOAD,
 	DEATH,
 	GAMEOVER,
+	NEXT,
 	CREDITS
 } State;
 
