@@ -79,6 +79,13 @@ int main() {
 	stopMusic(musicMenu, musicGame);
 	updateMusic(&music, musicMenu, musicGame);
 
+	sfSound* soundPlayerShoot = sfSound_create();
+	sfSoundBuffer* soundBufferPlayerShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-allie.ogg");
+	sfSound_setBuffer(soundPlayerShoot, soundBufferPlayerShoot);
+
+	sfSound* soundEnnemisShoot = sfSound_create();
+	sfSoundBuffer* soundBufferEnnemisShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-ennemis.ogg");
+	sfSound_setBuffer(soundEnnemisShoot, soundBufferEnnemisShoot);
 
 	///***  = = =  GAME LOOP  = = =  ***///
 	while (sfRenderWindow_isOpen(w)) {
@@ -147,12 +154,12 @@ int main() {
 			/// Gamestate - IN-GAME
 			else if (gameState == GAME) {
 				renderBackdrop(w, bgCurrent);
-				playerUpdate(&player, w);
+				playerUpdate(&player, w, soundPlayerShoot);
 				tickDeath = -1;
 				tickNext = -1;
 
 				ITERATE_ALL_ENEMIES {
-					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState);
+					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot);
 					if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
 					if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
 
@@ -206,7 +213,7 @@ int main() {
 					}
 					enemyPos.y += 16;
 				}
-
+				
 				// Enemy-bullet collisions
 				if (player.hasFired) {
 					ITERATE_ALL_ENEMIES if (flagCheckCollisions) {
@@ -245,7 +252,7 @@ int main() {
 						enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
 						enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
 					}
-					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState);
+					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, soundEnnemisShoot);
 				}
 				tickDeath++;
 				enemyPos.y = 2 * grid;

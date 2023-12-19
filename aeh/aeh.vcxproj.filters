@@ -42,6 +42,9 @@
     <ClCompile Include="level.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="music.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tools.h">
@@ -68,5 +71,11 @@
     <ClInclude Include="level.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="music.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaderProjectil.farg" />
   </ItemGroup>
 </Project>
