@@ -22,6 +22,8 @@ int main() {
 	char lvl_1[] = PATH_LEVELS"lv1.dat";
 	char lvl_2[] = PATH_LEVELS"lv2.dat";
 	char lvl_3[] = PATH_LEVELS"lv3.dat";
+	char lvl_4[] = PATH_LEVELS"lv4.dat";
+	char lvl_5[] = PATH_LEVELS"lv5.dat";
 
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
@@ -36,6 +38,12 @@ int main() {
 	sfTexture* texPlayerShip = newTexture(PATH_TEXTURES"ship_proto.png");
 	sfTexture* texEnemy1 = newTexture(PATH_TEXTURES"enemy_1.png");
 	sfTexture* texEnemy2 = newTexture(PATH_TEXTURES"enemy_2.png");
+	sfTexture* texEnemy3 = newTexture(PATH_TEXTURES"enemy_3.png");
+	sfTexture* texEnemy4 = newTexture(PATH_TEXTURES"enemy_4.png");
+	sfTexture* texEnemy5 = newTexture(PATH_TEXTURES"enemy_5.png");
+	sfTexture* texEnemy6 = newTexture(PATH_TEXTURES"enemy_6.png");
+	sfTexture* texEnemy7 = newTexture(PATH_TEXTURES"enemy_7.png");
+	sfTexture* texEnemy8 = newTexture(PATH_TEXTURES"enemy_8.png");
 	sfTexture* texButtonStart = newTexture(PATH_TEXTURES"button_start.png");
 	sfTexture* texButtonQuit = newTexture(PATH_TEXTURES"button_quit.png");
 
@@ -175,15 +183,17 @@ int main() {
 				enemyCount = 0;
 				for (int i = 0; i < 8; i++) {
 					for (int j = 0; j < 16; j++) {
-						if (levelBuffer[i][j] == 1) {
+						if (levelBuffer[i][j] != 0) {
 							enemyBuffer[i][j] = malloc(sizeof(Enemy));
-							initEnemy(enemyBuffer[i][j], texEnemy1, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_1);
 							enemyCount++;
-						}
-						else if (levelBuffer[i][j] == 2) {
-							enemyBuffer[i][j] = malloc(sizeof(Enemy));
-							initEnemy(enemyBuffer[i][j], texEnemy2, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_2);
-							enemyCount++;
+							if (levelBuffer[i][j] == 1) initEnemy(enemyBuffer[i][j], texEnemy1, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_1);
+							else if (levelBuffer[i][j] == 2) initEnemy(enemyBuffer[i][j], texEnemy2, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_2);
+							else if (levelBuffer[i][j] == 3) initEnemy(enemyBuffer[i][j], texEnemy3, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_3);
+							else if (levelBuffer[i][j] == 4) initEnemy(enemyBuffer[i][j], texEnemy4, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_4);
+							else if (levelBuffer[i][j] == 5) initEnemy(enemyBuffer[i][j], texEnemy5, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_5);
+							else if (levelBuffer[i][j] == 6) initEnemy(enemyBuffer[i][j], texEnemy6, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_6);
+							else if (levelBuffer[i][j] == 7) initEnemy(enemyBuffer[i][j], texEnemy7, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_7);
+							else if (levelBuffer[i][j] == 8) initEnemy(enemyBuffer[i][j], texEnemy8, vector2f(j * grid + grid * 2 + W_WINDOW / 8., i * grid + grid * 2), ENEMY_8);
 						}
 						else enemyBuffer[i][j] = NULL;
 					}
@@ -312,7 +322,7 @@ int main() {
 
 			/// Gamestate - GAME OVER
 			else if (gameState == GAMEOVER) {
-				renderBackdrop(w, bgGO);
+				renderBackdrop(w, bgGO, NULL);
 				if (tickGO > 100) {
 					gameState = MENU;
 					music = MUSICMENU;
