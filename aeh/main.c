@@ -28,6 +28,8 @@ int main() {
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
 	sfRenderWindow_setFramerateLimit(w, TICKSPEED);
+	sfImage* icon = sfImage_createFromFile(PATH_TEXTURES"enemy_2_icon.png");
+	sfRenderWindow_setIcon(w, 64, 64, sfImage_getPixelsPtr(icon));
 
 	///* == TEXTURE DUMP == *///
 	sfTexture* bgGalaxy = newTexture(PATH_TEXTURES"bg_galaxy.png");
