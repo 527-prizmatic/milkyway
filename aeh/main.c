@@ -33,6 +33,8 @@ int main() {
 	sfTexture* bgGalaxy = newTexture(PATH_TEXTURES"bg_galaxy.png");
 	sfTexture* bgNebula = newTexture(PATH_TEXTURES"bg_nebula.png");
 	sfTexture* bgPlanet = newTexture(PATH_TEXTURES"bg_planet.png");
+	sfTexture* bgStar = newTexture(PATH_TEXTURES"bg_star.png");
+	sfTexture* bgStation = newTexture(PATH_TEXTURES"bg_station.png");
 	sfTexture* bgMain = newTexture(PATH_TEXTURES"bg_menu.png");
 	sfTexture* bgGO = newTexture(PATH_TEXTURES"GAMEOVER.png");
 	sfTexture* texPlayerShip = newTexture(PATH_TEXTURES"ship_proto.png");
@@ -172,7 +174,7 @@ int main() {
 			/// Gamestate - LOADING NEXT WAVE
 			else if (gameState == LOAD) {
 				gameState = GAME;
-				int rl = random(3);
+				int rl = random(5);
 				switch (rl) {
 				case 0: lvlCurrent = lvl_1; break;
 				case 1: lvlCurrent = lvl_2; break;
@@ -181,11 +183,13 @@ int main() {
 				case 4: lvlCurrent = lvl_5; break;
 				}
 
-				int rb = random(3);
+				int rb = random(5);
 				switch (rb) {
 				case 0: bgCurrent = bgGalaxy; break;
 				case 1: bgCurrent = bgNebula; break;
 				case 2: bgCurrent = bgPlanet; break;
+				case 3: bgCurrent = bgStar; break;
+				case 4: bgCurrent = bgStation; break;
 				}
 				sfShader_setTextureUniform(shaderBG, "texture", bgCurrent);
 
