@@ -124,9 +124,15 @@ int main() {
 	///* == MUSIC & SFX == *///
 	sfMusic* musicMenu = sfMusic_createFromFile(PATH_MUSIC"invaders.ogg");
 	sfMusic* musicGame = sfMusic_createFromFile(PATH_MUSIC"stretch.ogg");
+	sfMusic* musicPluto = sfMusic_createFromFile(PATH_MUSIC"pluto.ogg");
+	sfMusic* musicSaturn = sfMusic_createFromFile(PATH_MUSIC"saturn.ogg");
+	sfMusic* musicMars = sfMusic_createFromFile(PATH_MUSIC"mars.ogg");
+	sfMusic* musicVenus = sfMusic_createFromFile(PATH_MUSIC"venus.ogg");
+	sfMusic* musicMercury = sfMusic_createFromFile(PATH_MUSIC"mercury.ogg");
+	sfMusic* musicCurrent = musicGame;
 	MusicState music = MENU;
-	stopMusic(musicMenu, musicGame);
-	updateMusic(&music, musicMenu, musicGame);
+	stopMusic(musicMenu, musicCurrent);
+	updateMusic(&music, musicMenu, musicCurrent);
 
 	sfSound* soundPlayerShoot = sfSound_create();
 	sfSoundBuffer* soundBufferPlayerShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-allie.ogg");
@@ -174,6 +180,7 @@ int main() {
 
 			/// Gamestate - LOADING NEXT WAVE
 			else if (gameState == LOAD) {
+				stopMusic(musicMenu, musicCurrent);
 				gameState = GAME;
 				int rl = random(5);
 				switch (rl) {
@@ -193,6 +200,16 @@ int main() {
 				case 4: bgCurrent = bgStation; break;
 				}
 				sfShader_setTextureUniform(shaderBG, "texture", bgCurrent);
+
+				int rm = random(5);
+				switch (rm) {
+				case 0: musicCurrent = musicPluto; break;
+				case 1: musicCurrent = musicSaturn; break;
+				case 2: musicCurrent = musicMars; break;
+				case 3: musicCurrent = musicVenus; break;
+				case 4: musicCurrent = musicMercury; break;
+				default: musicCurrent = musicPluto; break;
+				}
 
 				readLevelFile(lvlCurrent, levelBuffer);
 
@@ -217,8 +234,7 @@ int main() {
 				enemyPos.x = grid * 2 + W_WINDOW / 8.;
 				enemyPos.y = 2 * grid;
 				music = MUSICGAME;
-				stopMusic(musicMenu, musicGame);
-				updateMusic(&music, musicMenu, musicGame);
+				updateMusic(&music, musicMenu, musicCurrent);
 			}
 
 			/// Gamestate - IN-GAME
@@ -233,6 +249,7 @@ int main() {
 				sfText_setScale(score, txtsize);
 				sfText_setPosition(score, txtPos);
 				sfRenderWindow_drawText(w, score, NULL);
+				enemyPos.x += ENEMY_SPD / (enemyCount + 1) * TICK * 2 * (enemyMoveDir - 0.5);
 
 				ITERATE_ALL_ENEMIES {
 					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot, &rstateBulletsE);
@@ -246,7 +263,7 @@ int main() {
 							sfFloatRect hitboxB = sfSprite_getGlobalBounds(enemyBuffer[i][j]->bullet->spr);
 							if (sfFloatRect_intersects(&hitboxP, &hitboxB, NULL)) {
 								destroyBulletEnemy(enemyBuffer[i][j]);
-								oldPos.x = enemyPos.x - grid / 2;
+								oldPos.x = enemyPos.x;
 								oldPos.y = enemyPos.y;
 								lives--;
 								gameState = DEATH;
@@ -264,8 +281,7 @@ int main() {
 					ITERATE_ALL_ENEMIES {
 						enemyBuffer[i][j]->pos.y += 16;
 						if (enemyBuffer[i][j]->pos.y > 800) {
-							if (enemyMoveDir == 1) oldPos.x = mapBounds.x;
-							else oldPos.x = mapBounds.y - grid * 16;
+							oldPos.x = mapBounds.y - grid * 16;
 							oldPos.y = enemyPos.y;
 							lives--;
 							gameState = DEATH;
@@ -279,8 +295,7 @@ int main() {
 					ITERATE_ALL_ENEMIES {
 						enemyBuffer[i][j]->pos.y += 16;
 						if (enemyBuffer[i][j]->pos.y > 800) {
-							if (enemyMoveDir == 1) oldPos.x = mapBounds.x;
-							else oldPos.x = mapBounds.y - grid * 16;
+							oldPos.x = mapBounds.x;
 							oldPos.y = enemyPos.y;
 							lives--;
 							gameState = DEATH;
@@ -323,14 +338,14 @@ int main() {
 
 			/// Gamestate - DEATH TRANSITION
 			else if (gameState == DEATH) {
-				sfMusic_pause(musicGame);
+				sfMusic_pause(musicCurrent);
 				renderBackdrop(w, bgCurrent, &rstateBG);
 				ITERATE_ALL_ENEMIES {
-					if (tickDeath < 40) {
+					if (tickDeath >= 0 && tickDeath < 40) {
 						enemyBuffer[i][j]->pos.x = lerp(oldPos.x + j * grid, W_WINDOW / 2, tickDeath / 40.);
 						enemyBuffer[i][j]->pos.y = lerp(oldPos.y + i * grid, H_WINDOW / 2, tickDeath / 40.);
 					}
-					else if (tickDeath < 80) {
+					else if (tickDeath >= 0 && tickDeath < 80) {
 						enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
 						enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
 					}
@@ -340,8 +355,10 @@ int main() {
 				enemyPos.y = 2 * grid;
 
 				if (tickDeath == 120 && lives > 0) {
+					enemyPos.x = grid * 2 + W_WINDOW / 8.;
+					enemyPos.y = grid * 2;
 					gameState = GAME;
-					sfMusic_play(musicGame);
+					sfMusic_play(musicCurrent);
 				}
 				else if (tickDeath == 120 && lives == 0) {
 					gameState = GAMEOVER;
@@ -354,8 +371,8 @@ int main() {
 				if (tickGO > 100) {
 					gameState = MENU;
 					music = MUSICMENU;
-					stopMusic(musicMenu, musicGame);
-					updateMusic(&music, musicMenu, musicGame);
+					stopMusic(musicMenu, musicCurrent);
+					updateMusic(&music, musicMenu, musicCurrent);
 				}
 				tickGO++;
 			}

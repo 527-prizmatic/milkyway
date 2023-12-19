@@ -1,8 +1,7 @@
 #include "enemy.h"
 #include "render.h"
 
-#define ENEMY_SPD 900.
-#define BULLET_SPD 200.
+#define BULLET_SPD 250.
 
 void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p, BulletTypes _type) {
 	_e->spr = sfSprite_create();

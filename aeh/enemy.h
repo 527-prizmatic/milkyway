@@ -4,6 +4,8 @@
 #include "projectile.h"
 #include "SFML/Graphics.h"
 
+#define ENEMY_SPD 900.
+
 typedef struct {
 	sfSprite* spr;
 	sfTexture* tex;
