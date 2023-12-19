@@ -12,7 +12,7 @@
 #define TICK 1. / TICKSPEED
 
 #define PATH_TEXTURES "..\\data\\textures\\"
-#define PATH_LEVELS "..\\data\\bin\\"
+#define PATH_LEVELS "..\\data\\levels\\"
 #define PATH_MUSIC "..\\data\\audio\\bgm\\"
 #define PATH_SOUNDS "..\\data\\audio\\sfx\\"
 

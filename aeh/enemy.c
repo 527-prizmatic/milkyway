@@ -1,7 +1,7 @@
 #include "enemy.h"
 #include "render.h"
 
-#define ENEMY_SPD 600.
+#define ENEMY_SPD 900.
 #define BULLET_SPD 200.
 
 void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p, BulletTypes _type) {
@@ -36,12 +36,14 @@ void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c) {
 		_e->bullet->pos.y += BULLET_SPD * TICK;
 		sfSprite_setPosition(_e->bullet->spr, _e->bullet->pos);
 		sfRenderWindow_drawSprite(_w, _e->bullet->spr, NULL);
-		if (_e->bullet->pos.y > 1000.) {
-			_e->hasFired = 0;
-			free(_e->bullet);
-		}
+		if (_e->bullet->pos.y > 1000.) destroyBulletEnemy(_e);
 	}
 
 	sfSprite_setPosition(_e->spr, vectorSnap(_e->pos, 4));
 	sfRenderWindow_drawSprite(_w, _e->spr, NULL);
+}
+
+void destroyBulletEnemy(Enemy* _e) {
+	_e->hasFired = 0;
+	free(_e->bullet);
 }

@@ -19,6 +19,7 @@ int main() {
 
 	char lvl_1[] = PATH_LEVELS"lv1.dat";
 	char lvl_2[] = PATH_LEVELS"lv2.dat";
+	char lvl_3[] = PATH_LEVELS"lv3.dat";
 
 	sfVideoMode mode = { W_WINDOW, H_WINDOW, 2 };
 	sfRenderWindow* w = sfRenderWindow_create(mode, "Milky Way", sfNone, NULL);
@@ -97,7 +98,7 @@ int main() {
 			}
 			else if (gameState == LOAD) {
 				gameState = GAME;
-				readLevelFile(lvl_2, levelBuffer);
+				readLevelFile(lvl_3, levelBuffer);
 
 				enemyCount = 0;
 				for (int i = 0; i < 8; i++) {
