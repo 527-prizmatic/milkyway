@@ -182,9 +182,16 @@ int main() {
 				tickDeath++;
 				enemyPosY = 9 * grid;
 
-				if (tickDeath == 120) {
+				if (tickDeath == 120 && lives >= 0) {
+					lives -= 1;
 					gameState = GAME;
 					sfMusic_play(musicGame);
+				}
+				else if (tickDeath == 120 && lives < 0) {
+					gameState = MENU;
+					music = MUSICMENU;
+					stopMusic(musicMenu, musicGame);
+					updateMusic(&music, musicMenu, musicGame);
 				}
 			}
 			
