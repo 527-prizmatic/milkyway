@@ -20,7 +20,7 @@ void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p, BulletTypes _type) {
 	sfSprite_setScale(_e->spr, SCALE_SPRITES);
 }
 
-void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfSound* _soundEnnemisShoot) {
+void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfSound* _soundEnnemisShoot, sfRenderStates* _state) {
 	if (_dir == 0) _e->pos.x -= ENEMY_SPD / (_c + 1) * TICK;
 	else if (_dir == 1) _e->pos.x += ENEMY_SPD / (_c + 1) * TICK;
 
@@ -35,8 +35,10 @@ void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfS
 	// Bullet updates
 	if (_e->hasFired) {
 		_e->bullet->pos.y += BULLET_SPD * TICK;
+		sfShader_setVec2Uniform(_state->shader, "uPos", _e->bullet->pos);
+		sfShader_setTextureUniform(_state->shader, "uPos", projectileTextureByType(_e->type));
 		sfSprite_setPosition(_e->bullet->spr, _e->bullet->pos);
-		sfRenderWindow_drawSprite(_w, _e->bullet->spr, NULL);
+		sfRenderWindow_drawSprite(_w, _e->bullet->spr, _state);
 		if (_e->bullet->pos.y > 950.) destroyBulletEnemy(_e);
 	}
 

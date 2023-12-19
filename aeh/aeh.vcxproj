@@ -162,6 +162,9 @@
     <ClInclude Include="vect.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\data\shaders\bg.frag" />
+    <None Include="..\data\shaders\bulletse.frag" />
+    <None Include="..\data\shaders\bulletsp.frag" />
     <None Include="shaderProjectil.farg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

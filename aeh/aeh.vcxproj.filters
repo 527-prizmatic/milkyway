@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers de ressources\shaders">
+      <UniqueIdentifier>{95541fde-cb93-4ef1-8409-2e4c864ad1f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c">
@@ -77,5 +80,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaderProjectil.farg" />
+    <None Include="..\data\shaders\bulletsp.frag">
+      <Filter>Fichiers de ressources\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\bg.frag">
+      <Filter>Fichiers de ressources\shaders</Filter>
+    </None>
+    <None Include="..\data\shaders\bulletse.frag">
+      <Filter>Fichiers de ressources\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
