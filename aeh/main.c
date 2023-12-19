@@ -71,6 +71,9 @@ int main() {
 	stopMusic(musicMenu, musicGame);
 	updateMusic(&music, musicMenu, musicGame);
 
+	sfSound* soundPlayerShoot = sfSound_create();
+	sfSoundBuffer* soundBuffer = sfSoundBuffer_createFromFile(PATH_SOUNDS"ElectriciteSound.ogg");
+	sfSound_setBuffer(soundPlayerShoot, soundBuffer);
 
 	///***  = = =  GAME LOOP  = = =  ***///
 	while (sfRenderWindow_isOpen(w)) {
@@ -119,7 +122,7 @@ int main() {
 			}
 			else if (gameState == GAME) {
 				renderBackdrop(w, bgGalaxy);
-				playerUpdate(&player, w);
+				playerUpdate(&player, w, soundPlayerShoot);
 				tickDeath = -1;
 
 				for (int i = 0; i < 8; i++) {

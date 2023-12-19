@@ -19,15 +19,18 @@ void initPlayer(Player* _p, sfTexture* _t) {
 	sfSprite_setScale(_p->spr, SCALE_SPRITES);
 }
 
-void playerUpdate(Player* _p, sfRenderWindow* _w) {
+void playerUpdate(Player* _p, sfRenderWindow* _w, sfSound* _soundPlayerShoot) {
 	if (testKeyPress(_w, sfKeyQ) && !testKeyPress(_w, sfKeyD) && _p->pos.x > W_WINDOW / 8.) _p->pos.x -= PLAYER_SPD * TICK;
 	else if (testKeyPress(_w, sfKeyD) && !testKeyPress(_w, sfKeyQ) && _p->pos.x < W_WINDOW * 7. / 8.) _p->pos.x += PLAYER_SPD * TICK;
 
 	if (testKeyPress(_w, sfKeySpace) && !_p->hasFired) {
+
 		_p->hasFired = 1;
 		_p->bullet = malloc(sizeof(Projectile));
 		if (_p->bullet == NULL) return;
+		sfSound_play(_soundPlayerShoot);
 		initProjectile(_p->bullet, PLAYER, vector2f(_p->pos.x, _p->pos.y - 20.), 0);
+	
 	}
 
 	// Bullet updates
