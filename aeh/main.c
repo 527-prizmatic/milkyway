@@ -136,6 +136,7 @@ int main() {
 
 	///* == SCORE BOARD == *///
 	int scoreGame = 0;
+	int scoreGameBonusLife = 0;
 	sfText* score = sfText_create();
 	sfFont* scoreFront = sfFont_createFromFile(PATH_FRONT"8-bit-hud.ttf");
 	sfVector2f txtsize = { 0.8f, 0.8f };
@@ -292,6 +293,11 @@ int main() {
 						sfFloatRect hitboxB = sfSprite_getGlobalBounds(player.bullet->spr);
 						if (sfFloatRect_intersects(&hitboxE, &hitboxB, NULL)) {
 							scoreGame += 100;
+							scoreGameBonusLife += 100;
+							if (scoreGameBonusLife >= 10000) {
+								scoreGameBonusLife = 0;
+								lives += 1;
+							}
 							destroyBulletPlayer(&player);
 							if (enemyBuffer[i][j]->hasFired) destroyBulletEnemy(enemyBuffer[i][j]);
 							free(enemyBuffer[i][j]);
