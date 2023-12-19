@@ -73,8 +73,12 @@ int main() {
 	updateMusic(&music, musicMenu, musicGame);
 
 	sfSound* soundPlayerShoot = sfSound_create();
-	sfSoundBuffer* soundBuffer = sfSoundBuffer_createFromFile(PATH_SOUNDS"ElectriciteSound.ogg");
-	sfSound_setBuffer(soundPlayerShoot, soundBuffer);
+	sfSoundBuffer* soundBufferPlayerShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-1-81135.ogg");
+	sfSound_setBuffer(soundPlayerShoot, soundBufferPlayerShoot);
+
+	sfSound* soundEnnemisShoot = sfSound_create();
+	sfSoundBuffer* soundBufferEnnemisShoot = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-5-102360.ogg");
+	sfSound_setBuffer(soundEnnemisShoot, soundBufferEnnemisShoot);
 
 	///***  = = =  GAME LOOP  = = =  ***///
 	while (sfRenderWindow_isOpen(w)) {
@@ -129,7 +133,7 @@ int main() {
 				for (int i = 0; i < 8; i++) {
 					for (int j = 0; j < 16; j++) {
 						if (enemyBuffer[i][j] != NULL) {
-							enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount);
+							enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, soundEnnemisShoot);
 							if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
 							if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
 						}
@@ -171,7 +175,7 @@ int main() {
 								enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
 								enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
 							}
-							enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount);
+							enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, soundEnnemisShoot);
 						}
 					}
 				}
