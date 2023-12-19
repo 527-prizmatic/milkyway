@@ -32,6 +32,7 @@ int main() {
 	sfTexture* bgNebula = newTexture(PATH_TEXTURES"bg_nebula.png");
 	sfTexture* bgPlanet = newTexture(PATH_TEXTURES"bg_planet.png");
 	sfTexture* bgMain = newTexture(PATH_TEXTURES"bg_menu.png");
+	sfTexture* bgGO = newTexture(PATH_TEXTURES"GAMEOVER.png");
 	sfTexture* texPlayerShip = newTexture(PATH_TEXTURES"ship_proto.png");
 	sfTexture* texEnemy1 = newTexture(PATH_TEXTURES"enemy_1.png");
 	sfTexture* texEnemy2 = newTexture(PATH_TEXTURES"enemy_2.png");
@@ -48,7 +49,7 @@ int main() {
 
 	///* == MISC TECHNICAL VARS == *///
 	float tick = 0., tickExit = 0.; // Timers - 1
-	int tickDeath = 0, tickNext = 0, tickShaders = 0; // Timers - 2
+	int tickDeath = 0, tickNext = 0, tickShaders = 0, tickGO = 0; // Timers - 2
 	sfEvent e; // Event handler
 	char levelBuffer[8][16]; // Contains level raw binary data
 	Enemy* enemyBuffer[8][16]; // Contains enemy objects
@@ -305,11 +306,20 @@ int main() {
 					sfMusic_play(musicGame);
 				}
 				else if (tickDeath == 120 && lives == 0) {
+					gameState = GAMEOVER;
+				}
+			}
+
+			/// Gamestate - GAME OVER
+			else if (gameState == GAMEOVER) {
+				renderBackdrop(w, bgGO);
+				if (tickGO > 100) {
 					gameState = MENU;
 					music = MUSICMENU;
 					stopMusic(musicMenu, musicGame);
 					updateMusic(&music, musicMenu, musicGame);
 				}
+				tickGO++;
 			}
 
 			/// Gamestate - WAITING FOR NEXT WAVE
