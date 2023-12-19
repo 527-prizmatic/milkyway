@@ -179,6 +179,7 @@ int main() {
 			if (gameState == MENU) {
 				updateMenu(w, &gameState);
 				displayMenu(w, bgMain, PressSpace);
+				lives = 3;
 			}
 
 			/// Gamestate - LOADING NEXT WAVE
