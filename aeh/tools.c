@@ -35,5 +35,5 @@ sfBool testLClick(sfRenderWindow* _w) {
 }
 
 int random(int _u) {
-	return rand() % _u;
+	return rand() % (_u + 1);
 }

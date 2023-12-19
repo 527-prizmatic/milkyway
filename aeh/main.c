@@ -279,7 +279,7 @@ int main() {
 					dirChangeFlag = 0;
 					enemyMoveDir = 0;
 					ITERATE_ALL_ENEMIES {
-						enemyBuffer[i][j]->pos.y += 16;
+						enemyBuffer[i][j]->pos.y += 20;
 						if (enemyBuffer[i][j]->pos.y > 800) {
 							oldPos.x = mapBounds.y - grid * 16;
 							oldPos.y = enemyPos.y;
@@ -293,7 +293,7 @@ int main() {
 					dirChangeFlag = 0;
 					enemyMoveDir = 1;
 					ITERATE_ALL_ENEMIES {
-						enemyBuffer[i][j]->pos.y += 16;
+						enemyBuffer[i][j]->pos.y += 20;
 						if (enemyBuffer[i][j]->pos.y > 800) {
 							oldPos.x = mapBounds.x;
 							oldPos.y = enemyPos.y;
