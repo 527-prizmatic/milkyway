@@ -15,6 +15,6 @@ typedef struct {
 
 void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p, BulletTypes _type);
 
-void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c);
+void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s);
 
 void destroyBulletEnemy(Enemy* _e);
