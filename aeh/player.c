@@ -19,7 +19,7 @@ void initPlayer(Player* _p, sfTexture* _t) {
 	sfSprite_setScale(_p->spr, SCALE_SPRITES);
 }
 
-void playerUpdate(Player* _p, sfRenderWindow* _w, sfSound* _soundPlayerShoot) {
+void playerUpdate(Player* _p, sfRenderWindow* _w, sfSound* _soundPlayerShoot, sfRenderStates* _state) {
 	if (testKeyPress(_w, sfKeyQ) && !testKeyPress(_w, sfKeyD) && _p->pos.x > W_WINDOW / 8.) _p->pos.x -= PLAYER_SPD * TICK;
 	else if (testKeyPress(_w, sfKeyD) && !testKeyPress(_w, sfKeyQ) && _p->pos.x < W_WINDOW * 7. / 8.) _p->pos.x += PLAYER_SPD * TICK;
 
@@ -36,8 +36,10 @@ void playerUpdate(Player* _p, sfRenderWindow* _w, sfSound* _soundPlayerShoot) {
 	// Bullet updates
 	if (_p->hasFired) {
 		_p->bullet->pos.y -= BULLET_SPD * TICK;
+		sfShader_setVec2Uniform(_state->shader, "uPos", _p->bullet->pos);
+		sfShader_setTextureUniform(_state->shader, "uPos", projectileTextureByType(PLAYER));
 		sfSprite_setPosition(_p->bullet->spr, _p->bullet->pos);
-		sfRenderWindow_drawSprite(_w, _p->bullet->spr, NULL);
+		sfRenderWindow_drawSprite(_w, _p->bullet->spr, _state);
 		if (_p->bullet->pos.y < 0) destroyBulletPlayer(_p);
 	}
 	

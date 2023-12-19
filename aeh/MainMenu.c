@@ -37,7 +37,7 @@ void updateMenu(sfRenderWindow* _window, sfSprite* _spritePressPlayUpdate, sfSpr
 }
 
 void displayMenu(sfRenderWindow* _window, sfTexture* _textureMainMenu, sfSprite* _spritePressPlay, sfSprite* _spriteQuit) {
-	renderBackdrop(_window, _textureMainMenu);
+	renderBackdrop(_window, _textureMainMenu, NULL);
 	sfRenderWindow_drawSprite(_window, _spritePressPlay, NULL);
 	sfRenderWindow_drawSprite(_window, _spriteQuit, NULL);
 }

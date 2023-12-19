@@ -49,7 +49,7 @@ int main() {
 
 	///* == MISC TECHNICAL VARS == *///
 	float tick = 0., tickExit = 0.; // Timers - 1
-	int tickDeath = 0, tickNext = 0, tickGO = 0; // Timers - 2
+	int tickDeath = 0, tickNext = 0, tickShaders = 0, tickGO = 0; // Timers - 2
 	sfEvent e; // Event handler
 	char levelBuffer[8][16]; // Contains level raw binary data
 	Enemy* enemyBuffer[8][16]; // Contains enemy objects
@@ -64,6 +64,44 @@ int main() {
 	int lives = 3; // Player's current lives
 	sfVector2f oldPos = vector2f(0., 0.); // Keeps track of where the enemy formation was for the death anim's initial lerp
 	char flagCheckCollisions = 1;
+
+	///* == SHADERS == *///
+	sfShader* shaderBulletsP = NULL;
+	sfRenderStates rstateBulletsP;
+	sfShader* shaderBulletsE = NULL;
+	sfRenderStates rstateBulletsE;
+	sfShader* shaderBG = NULL;
+	sfRenderStates rstateBG;
+	if (!sfShader_isAvailable()) {
+		printf("cususucdics");
+		return;
+	}
+	else {
+		shaderBulletsP = sfShader_createFromFile(NULL, NULL, PATH_SHADERS"bulletsp.frag");
+		if (shaderBulletsP == NULL) return;
+		rstateBulletsP.shader = shaderBulletsP;
+		rstateBulletsP.blendMode = sfBlendAlpha;
+		rstateBulletsP.transform = sfTransform_Identity;
+		rstateBulletsP.texture = NULL;
+
+		shaderBulletsE = sfShader_createFromFile(NULL, NULL, PATH_SHADERS"bulletse.frag");
+		if (shaderBulletsE == NULL) return;
+		rstateBulletsE.shader = shaderBulletsE;
+		rstateBulletsE.blendMode = sfBlendAlpha;
+		rstateBulletsE.transform = sfTransform_Identity;
+		rstateBulletsE.texture = NULL;
+
+		shaderBG = sfShader_createFromFile(NULL, NULL, PATH_SHADERS"bg.frag");
+		if (shaderBG == NULL) return;
+		rstateBG.shader = shaderBG;
+		rstateBG.blendMode = sfBlendAlpha;
+		rstateBG.transform = sfTransform_Identity;
+		rstateBG.texture = NULL;
+	}
+	sfShader_setVec2Uniform(shaderBulletsP, "uRes", vector2f(W_WINDOW, H_WINDOW));
+	sfShader_setVec2Uniform(shaderBulletsE, "uRes", vector2f(W_WINDOW, H_WINDOW));
+	sfShader_setVec2Uniform(shaderBG, "uRes", vector2f(W_WINDOW, H_WINDOW));
+
 
 	///* == MAIN MENU BUTTONS == *///
 	sfSprite* SpritePlayMenu = sfSprite_create();
@@ -103,7 +141,10 @@ int main() {
 			}
 			else tickExit = 0.f;
 			tick = 0.f;
-
+			tickShaders++;
+			sfShader_setIntUniform(shaderBulletsP, "uTime", tickShaders);
+			sfShader_setIntUniform(shaderBulletsE, "uTime", tickShaders);
+			sfShader_setIntUniform(shaderBG, "uTime", tickShaders);
 
 			/// Gamestate - MAIN MENU
 			if (gameState == MENU) {
@@ -120,12 +161,14 @@ int main() {
 				case 1: lvlCurrent = lvl_2; break;
 				case 2: lvlCurrent = lvl_3; break;
 				}
+
 				int rb = random(3);
 				switch (rb) {
 				case 0: bgCurrent = bgGalaxy; break;
 				case 1: bgCurrent = bgNebula; break;
 				case 2: bgCurrent = bgPlanet; break;
 				}
+				sfShader_setTextureUniform(shaderBG, "texture", bgCurrent);
 
 				readLevelFile(lvlCurrent, levelBuffer);
 
@@ -154,13 +197,13 @@ int main() {
 
 			/// Gamestate - IN-GAME
 			else if (gameState == GAME) {
-				renderBackdrop(w, bgCurrent);
-				playerUpdate(&player, w, soundPlayerShoot);
+				renderBackdrop(w, bgCurrent, &rstateBG);
+				playerUpdate(&player, w, soundPlayerShoot, &rstateBulletsP);
 				tickDeath = -1;
 				tickNext = -1;
 
 				ITERATE_ALL_ENEMIES {
-					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot);
+					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot, &rstateBulletsE);
 					if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
 					if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
 
@@ -243,7 +286,7 @@ int main() {
 			/// Gamestate - DEATH TRANSITION
 			else if (gameState == DEATH) {
 				sfMusic_pause(musicGame);
-				renderBackdrop(w, bgCurrent);
+				renderBackdrop(w, bgCurrent, &rstateBG);
 				ITERATE_ALL_ENEMIES {
 					if (tickDeath < 40) {
 						enemyBuffer[i][j]->pos.x = lerp(oldPos.x + j * grid, W_WINDOW / 2, tickDeath / 40.);
@@ -253,7 +296,7 @@ int main() {
 						enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
 						enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
 					}
-					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, soundEnnemisShoot);
+					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, soundEnnemisShoot, &rstateBulletsE);
 				}
 				tickDeath++;
 				enemyPos.y = 2 * grid;
@@ -281,13 +324,13 @@ int main() {
 
 			/// Gamestate - WAITING FOR NEXT WAVE
 			else if (gameState == NEXT) {
-				renderBackdrop(w, bgCurrent);
-				playerUpdate(&player, w, soundPlayerShoot);
+				renderBackdrop(w, bgCurrent, &rstateBG);
+				playerUpdate(&player, w, soundPlayerShoot, &rstateBulletsP);
 
 				tickNext++;
 				if (tickNext == 60) gameState = LOAD;
 			}
-			
+
 			sfRenderWindow_display(w);
 		}
 	}
