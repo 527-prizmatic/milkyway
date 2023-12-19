@@ -27,11 +27,15 @@ void main() {
 	newclr.b *= 1.25;
 	newclr.r *= 0.75;
 
+	float scanline = clamp(((1. - fract((uTime) / 200. + sin(uv.y / 2.))) * 10.) - 9., 0., 1.);
+	newclr.r *= 1. - 0.5 * scanline;
+	newclr.g *= 1. + 0.25 * scanline;
+	newclr.b *= 1. + scanline;
+
 	if (uTime % 4 == 0) newclr.rgb *= 0.95;
 
 	newclr.g += 0.05 * clamp(1 - (cos(time * 5. + uv.y * 200.) + 0.97), 0., 1.) * sin((uv.y + uv.x) * 3.14);
 	newclr.b += 0.1 * clamp(1 - (cos(time * 2. + uv.y * 200.) + 0.97), 0., 1.)  * sin((uv.y + uv.x) * 3.14);
-
 
 	gl_FragColor = vec4(newclr, 1.);
 }
