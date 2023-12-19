@@ -12,6 +12,8 @@
 #include "level.h"
 #include "music.h"
 
+#define ITERATE_ALL_ENEMIES for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL)
+
 int main() {
 	///***  = = =  PREINIT  = = =  ***///
 	ShowWindow(GetConsoleWindow(), 0);
@@ -40,22 +42,27 @@ int main() {
 	Player player;
 	initPlayer(&player, texPlayerShip);
 
+	///* == RANDOMIZED LEVEL DATA == *///
+	char* lvlCurrent = NULL;
+	sfTexture* bgCurrent = NULL;
+
 	///* == MISC TECHNICAL VARS == *///
 	float tick = 0., tickExit = 0.; // Timers - 1
-	int tickDeath = 0; // Timers - 2
+	int tickDeath = 0, tickNext = 0; // Timers - 2
 	sfEvent e; // Event handler
 	char levelBuffer[8][16]; // Contains level raw binary data
 	Enemy* enemyBuffer[8][16]; // Contains enemy objects
 	char enemyMoveDir = 0; // Whether the enemy formation hovers to the left or to the right
-	int grid = (W_WINDOW * 0.75) / 20.; // Spacing between enemies within a formation
+	int grid = (int)(W_WINDOW * 0.75) / 20.; // Spacing between enemies within a formation
 	sfVector2f mapBounds = vector2f(W_WINDOW * 0.125, W_WINDOW * 0.875 - grid); // Game area's boundaries
 	int enemyCount = 0; // How many enemies are present on-screen
 	int dirChangeFlag = 0; // Technical flag for changing enemy movement direction
-	float enemyPosY = 0.; // Enemy formation's vertical position
+	sfVector2f enemyPos = vector2f(0., 0.); // Enemy formation's vertical position
 	State gameState = MENU; // Game state
 	sfVector2i mousePos; // Mouse position
 	int lives = 3; // Player's current lives
 	sfVector2f oldPos = vector2f(0., 0.); // Keeps track of where the enemy formation was for the death anim's initial lerp
+	char flagCheckCollisions = 1;
 
 	///* == MAIN MENU BUTTONS == *///
 	sfSprite* SpritePlayMenu = sfSprite_create();
@@ -96,13 +103,30 @@ int main() {
 			else tickExit = 0.f;
 			tick = 0.f;
 
+
+			/// Gamestate - MAIN MENU
 			if (gameState == MENU) {
 				updateMenu(w, SpritePlayMenu, SpriteQuitMenu, mousePos, &gameState, levelBuffer, enemyBuffer);
 				displayMenu(w, bgMain, SpritePlayMenu, SpriteQuitMenu);
 			}
+
+			/// Gamestate - LOADING NEXT WAVE
 			else if (gameState == LOAD) {
 				gameState = GAME;
-				readLevelFile(lvl_3, levelBuffer);
+				int rl = random(3);
+				switch (rl) {
+				case 0: lvlCurrent = lvl_1; break;
+				case 1: lvlCurrent = lvl_2; break;
+				case 2: lvlCurrent = lvl_3; break;
+				}
+				int rb = random(3);
+				switch (rb) {
+				case 0: bgCurrent = bgGalaxy; break;
+				case 1: bgCurrent = bgNebula; break;
+				case 2: bgCurrent = bgPlanet; break;
+				}
+
+				readLevelFile(lvlCurrent, levelBuffer);
 
 				enemyCount = 0;
 				for (int i = 0; i < 8; i++) {
@@ -120,72 +144,132 @@ int main() {
 						else enemyBuffer[i][j] = NULL;
 					}
 				}
-				enemyPosY = 9 * grid;
+				enemyPos.x = grid * 2 + W_WINDOW / 8.;
+				enemyPos.y = 2 * grid;
 				music = MUSICGAME;
 				stopMusic(musicMenu, musicGame);
 				updateMusic(&music, musicMenu, musicGame);
 			}
+
+			/// Gamestate - IN-GAME
 			else if (gameState == GAME) {
-				renderBackdrop(w, bgGalaxy);
+				renderBackdrop(w, bgCurrent);
 				playerUpdate(&player, w, soundPlayerShoot);
 				tickDeath = -1;
+				tickNext = -1;
 
-				for (int i = 0; i < 8; i++) {
-					for (int j = 0; j < 16; j++) {
-						if (enemyBuffer[i][j] != NULL) {
-							enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, soundEnnemisShoot);
-							if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
-							if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
+				ITERATE_ALL_ENEMIES {
+					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, soundEnnemisShoot);
+					if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
+					if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
+
+					// Testing for player-bullet collisions
+					if (flagCheckCollisions) {
+						if (enemyBuffer[i][j]->hasFired) {
+							sfFloatRect hitboxP = sfSprite_getGlobalBounds(player.spr);
+							sfFloatRect hitboxB = sfSprite_getGlobalBounds(enemyBuffer[i][j]->bullet->spr);
+							if (sfFloatRect_intersects(&hitboxP, &hitboxB, NULL)) {
+								destroyBulletEnemy(enemyBuffer[i][j]);
+								oldPos.x = enemyPos.x - grid / 2;
+								oldPos.y = enemyPos.y;
+								lives--;
+								gameState = DEATH;
+								flagCheckCollisions = 0;
+								break;
+							}
 						}
 					}
+					flagCheckCollisions = 1;
 				}
 
 				if (dirChangeFlag == 1) {
 					dirChangeFlag = 0;
 					enemyMoveDir = 0;
-					for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL) enemyBuffer[i][j]->pos.y += 16;
-					enemyPosY += 16;
+					ITERATE_ALL_ENEMIES {
+						enemyBuffer[i][j]->pos.y += 16;
+						if (enemyBuffer[i][j]->pos.y > 800) {
+							if (enemyMoveDir == 1) oldPos.x = mapBounds.x;
+							else oldPos.x = mapBounds.y - grid * 16;
+							oldPos.y = enemyPos.y;
+							lives--;
+							gameState = DEATH;
+						}
+					}
+					enemyPos.y += 16;
 				}
 				else if (dirChangeFlag == -1) {
 					dirChangeFlag = 0;
 					enemyMoveDir = 1;
-					for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL) enemyBuffer[i][j]->pos.y += 16;
-					enemyPosY += 16;
+					ITERATE_ALL_ENEMIES {
+						enemyBuffer[i][j]->pos.y += 16;
+						if (enemyBuffer[i][j]->pos.y > 800) {
+							if (enemyMoveDir == 1) oldPos.x = mapBounds.x;
+							else oldPos.x = mapBounds.y - grid * 16;
+							oldPos.y = enemyPos.y;
+							lives--;
+							gameState = DEATH;
+						}
+
+					}
+					enemyPos.y += 16;
 				}
 				
-				if (enemyPosY > 800) {
-					if (enemyMoveDir == 1) oldPos.x = mapBounds.x;
-					else oldPos.x = mapBounds.y - grid * 16;
-					oldPos.y = enemyPosY - grid * 7;
-					lives--;
-					gameState = DEATH;
-				}
-			}
-			else if (gameState == DEATH) {
-				sfMusic_pause(musicGame);
-				renderBackdrop(w, bgGalaxy);
-				for (int i = 0; i < 8; i++) {
-					for (int j = 0; j < 16; j++) {
-						if (enemyBuffer[i][j] != NULL) {
-							if (tickDeath < 40) {
-								enemyBuffer[i][j]->pos.x = lerp(oldPos.x + j * grid, W_WINDOW / 2, tickDeath / 40.);
-								enemyBuffer[i][j]->pos.y = lerp(oldPos.y + i * grid, H_WINDOW / 2, tickDeath / 40.);
-							}
-							else if (tickDeath < 80) {
-								enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
-								enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
-							}
-							enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, soundEnnemisShoot);
+				// Enemy-bullet collisions
+				if (player.hasFired) {
+					ITERATE_ALL_ENEMIES if (flagCheckCollisions) {
+						sfFloatRect hitboxE = sfSprite_getGlobalBounds(enemyBuffer[i][j]->spr);
+						sfFloatRect hitboxB = sfSprite_getGlobalBounds(player.bullet->spr);
+						if (sfFloatRect_intersects(&hitboxE, &hitboxB, NULL)) {
+							destroyBulletPlayer(&player);
+							if (enemyBuffer[i][j]->hasFired) destroyBulletEnemy(enemyBuffer[i][j]);
+							free(enemyBuffer[i][j]);
+							enemyBuffer[i][j] = NULL;
+							enemyCount--;
+							flagCheckCollisions = 0;
+							break;
 						}
 					}
 				}
+				flagCheckCollisions = 1;
+				if (enemyCount == 0) gameState = NEXT;
+
+				for (int i = 0; i < lives; i++) {
+					sfSprite_setPosition(player.spr, vector2f(40., 40. + 64 * i));
+					sfRenderWindow_drawSprite(w, player.spr, NULL);
+				}
+			}
+
+			/// Gamestate - DEATH TRANSITION
+			else if (gameState == DEATH) {
+				sfMusic_pause(musicGame);
+				renderBackdrop(w, bgCurrent);
+				ITERATE_ALL_ENEMIES {
+					if (tickDeath < 40) {
+						enemyBuffer[i][j]->pos.x = lerp(oldPos.x + j * grid, W_WINDOW / 2, tickDeath / 40.);
+						enemyBuffer[i][j]->pos.y = lerp(oldPos.y + i * grid, H_WINDOW / 2, tickDeath / 40.);
+					}
+					else if (tickDeath < 80) {
+						enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
+						enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
+					}
+					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, soundEnnemisShoot);
+				}
 				tickDeath++;
-				enemyPosY = 9 * grid;
+				enemyPos.y = 2 * grid;
 
 				if (tickDeath == 120) {
 					gameState = GAME;
 					sfMusic_play(musicGame);
 				}
+			}
+
+			/// Gamestate - WAITING FOR NEXT WAVE
+			else if (gameState == NEXT) {
+				renderBackdrop(w, bgCurrent);
+				playerUpdate(&player, w, soundPlayerShoot);
+
+				tickNext++;
+				if (tickNext == 60) gameState = LOAD;
 			}
 			
 			sfRenderWindow_display(w);
