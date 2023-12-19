@@ -29,7 +29,7 @@ void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfS
 		_e->bullet = malloc(sizeof(Projectile));
 		if (_e->bullet == NULL) return;
 		sfSound_play(_soundEnnemisShoot);
-		initProjectile(_e->bullet, _e->type, vector2f(_e->pos.x + 32, _e->pos.y + 20.), 0);
+		initProjectile(_e->bullet, _e->type, vector2f(_e->pos.x + 24, _e->pos.y + 20.), 0);
 	}
 
 	// Bullet updates
