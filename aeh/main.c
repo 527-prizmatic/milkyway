@@ -124,16 +124,24 @@ int main() {
 	stopMusic(musicMenu, musicCurrent);
 	updateMusic(&music, musicMenu, musicCurrent);
 
+	sfSoundBuffer* sndBufShootPlayer = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot_player.ogg");
+	sfSoundBuffer* sndBufShootEnemy = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot_enemy.ogg");
+	sfSoundBuffer* sndBufKillEnemy = sfSoundBuffer_createFromFile(PATH_SOUNDS"enemy_destroy.ogg");
+	sfSoundBuffer* sndBufLife = sfSoundBuffer_createFromFile(PATH_SOUNDS"life.ogg");
+
 	sfSound* sndShootPlayer = sfSound_create();
-	sfSoundBuffer* sndBufShootPlayer = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-allie.ogg");
 	sfSound_setBuffer(sndShootPlayer, sndBufShootPlayer);
-
-	sfSound* sndShootEnemy = sfSound_create();
-	sfSoundBuffer* sndBufShootEnemy = sfSoundBuffer_createFromFile(PATH_SOUNDS"shoot-ennemis.ogg");
-	sfSound_setBuffer(sndShootEnemy, sndBufShootEnemy);
-
 	sfSound_setVolume(sndShootPlayer, 12.5);
+	sfSound* sndShootEnemy = sfSound_create();
+	sfSound_setBuffer(sndShootEnemy, sndBufShootEnemy);
 	sfSound_setVolume(sndShootEnemy, 12.5);
+	sfSound* sndKillEnemy = sfSound_create();
+	sfSound_setBuffer(sndKillEnemy, sndBufKillEnemy);
+	sfSound_setVolume(sndKillEnemy, 15.);
+	sfSound* sndLife = sfSound_create();
+	sfSound_setBuffer(sndLife, sndBufLife);
+	sfSound_setVolume(sndLife, 25.);
+
 
 	///* == SCORE BOARD == *///
 	int scoreGame = 0;
@@ -151,7 +159,6 @@ int main() {
 	sfVector2f PressSpacetxtPos = { 810.0f, 840.0f };
 	char* PressSpaceChar = "Press Space";
 	sfText_setFont(PressSpace, PressSpaceFront);
-	sfText_setString(PressSpace, PressSpaceChar);
 	sfText_setScale(PressSpace, PressSpacetxtsize);
 	sfText_setPosition(PressSpace, PressSpacetxtPos);
 
@@ -179,6 +186,8 @@ int main() {
 			if (gameState == MENU) {
 				updateMenu(w, &gameState);
 				displayMenu(w, bgMain, PressSpace);
+				if (tickShaders % 40 < 30) sfText_setString(PressSpace, "PRESS SPACE");
+				else sfText_setString(PressSpace, " ");
 				lives = 3;
 			}
 
@@ -315,11 +324,13 @@ int main() {
 						sfFloatRect hitboxE = sfSprite_getGlobalBounds(enemyBuffer[i][j]->spr);
 						sfFloatRect hitboxB = sfSprite_getGlobalBounds(player.bullet->spr);
 						if (sfFloatRect_intersects(&hitboxE, &hitboxB, NULL)) {
+							sfSound_play(sndKillEnemy);
 							scoreGame += 100;
 							scoreGameBonusLife += 100;
 							if (scoreGameBonusLife >= 10000) {
 								scoreGameBonusLife = 0;
 								lives += 1;
+								sfSound_play(sndLife);
 							}
 							destroyBulletPlayer(&player);
 							if (enemyBuffer[i][j]->hasFired) destroyBulletEnemy(enemyBuffer[i][j]);
