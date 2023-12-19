@@ -35,13 +35,14 @@ void playerUpdate(Player* _p, sfRenderWindow* _w) {
 		_p->bullet->pos.y -= BULLET_SPD * TICK;
 		sfSprite_setPosition(_p->bullet->spr, _p->bullet->pos);
 		sfRenderWindow_drawSprite(_w, _p->bullet->spr, NULL);
-		if (_p->bullet->pos.y < 0) {
-			_p->hasFired = 0;
-			free(_p->bullet);
-		}
+		if (_p->bullet->pos.y < 0) destroyBulletPlayer(_p);
 	}
 	
 	sfSprite_setPosition(_p->spr, vectorSnap(_p->pos, 4));
-
 	sfRenderWindow_drawSprite(_w, _p->spr, NULL);
+}
+
+void destroyBulletPlayer(Player* _p) {
+	_p->hasFired = 0;
+	free(_p->bullet);
 }

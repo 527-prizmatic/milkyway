@@ -15,3 +15,5 @@ typedef struct {
 void initPlayer(Player* _p, sfTexture* _t);
 
 void playerUpdate(Player* _p, sfRenderWindow* _w);
+
+void destroyBulletPlayer(Player* _p);
