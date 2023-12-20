@@ -48,6 +48,9 @@
     <ClCompile Include="music.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="difficulty.c">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tools.h">
@@ -77,9 +80,11 @@
     <ClInclude Include="music.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="difficulty.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaderProjectil.farg" />
     <None Include="..\data\shaders\bulletsp.frag">
       <Filter>Fichiers de ressources\shaders</Filter>
     </None>

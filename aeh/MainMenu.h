@@ -4,5 +4,5 @@
 #include "render.h"
 #include "enemy.h"
 
-void updateMenu(sfRenderWindow* _window, State* _selectMenu);
+void updateMenu(sfRenderWindow* _window, State* _selectMenu, char* _flags);
 void displayMenu(sfRenderWindow* _window, sfTexture* _textureMainMenu, sfText* _PressSpace);

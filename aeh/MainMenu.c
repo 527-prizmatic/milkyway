@@ -20,10 +20,11 @@ sfVector2f posTitre = { 400.0f, 200.0f };
 
 sfVector2i mousePosMenu;*/
 
-void updateMenu(sfRenderWindow* _window, State* _selectMenu) {
+void updateMenu(sfRenderWindow* _window, State* _selectMenu, char* _flags) {
 	if (testKeyPress(_window, sfKeySpace))
 	{
-		*_selectMenu = LOAD;
+		*_selectMenu = CHOOSEDIFICULTY;
+		*_flags |= 128;
 	}
 
 	if (testKeyPress(_window, sfKeyEscape))

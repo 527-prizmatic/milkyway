@@ -19,11 +19,11 @@ void initEnemy(Enemy* _e, sfTexture* _t, sfVector2f _p, BulletTypes _type) {
 	sfSprite_setScale(_e->spr, SCALE_SPRITES);
 }
 
-void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfSound* _soundEnnemisShoot, sfRenderStates* _state) {
-	if (_dir == 0) _e->pos.x -= ENEMY_SPD / (_c + 1) * TICK;
-	else if (_dir == 1) _e->pos.x += ENEMY_SPD / (_c + 1) * TICK;
+void enemyUpdate(Enemy* _e, sfRenderWindow* _w, char _dir, int _c, State _s, sfSound* _soundEnnemisShoot, sfRenderStates* _state, Difficulty _diff) {
+	if (_dir == 0) _e->pos.x -= ENEMY_SPD / (_c + 1) * TICK * _diff.enemySpdMul;
+	else if (_dir == 1) _e->pos.x += ENEMY_SPD / (_c + 1) * TICK * _diff.enemySpdMul;
 
-	if (random(_c * _c * 0.5 + 1) == 0 && !_e->hasFired && _s == GAME) {
+	if (random((_c * _c / _diff.enemyFireRateMul) + 1) == 0 && !_e->hasFired && _s == GAME) {
 		_e->hasFired = 1;
 		_e->bullet = malloc(sizeof(Projectile));
 		if (_e->bullet == NULL) return;
