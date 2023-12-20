@@ -20,6 +20,7 @@
 
 typedef enum {
 	MENU = 0,
+	CHOOSEDIFICULTY,
 	GAME,
 	LOAD,
 	DEATH,
@@ -32,6 +33,14 @@ typedef enum {
 	MUSICMENU = 0,
 	MUSICGAME
 } MusicState;
+
+typedef enum
+{
+	RECON = 0,
+	ASSAULT,
+	INVASION,
+	GENOCIDE
+}MenuJouer;
 
 /// Initializes misc tools for handling time.
 void initTools();

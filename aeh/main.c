@@ -11,6 +11,7 @@
 #include "enemy.h"
 #include "level.h"
 #include "music.h"
+#include "GameMenu.h"
 
 #define ITERATE_ALL_ENEMIES for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL)
 
@@ -164,6 +165,10 @@ int main() {
 	sfText_setScale(PressSpace, PressSpacetxtsize);
 	sfText_setPosition(PressSpace, PressSpacetxtPos);
 
+	///* == GAME MENU == *///
+	MenuJouer Dificulty = ASSAULT;
+
+
 	///***  = = =  GAME LOOP  = = =  ***///
 	while (sfRenderWindow_isOpen(w)) {
 		while (sfRenderWindow_pollEvent(w, &e));
@@ -191,6 +196,13 @@ int main() {
 				if (tickShaders % 40 < 30) sfText_setString(PressSpace, "PRESS SPACE");
 				else sfText_setString(PressSpace, " ");
 				lives = 3;
+			}
+
+			if (gameState == CHOOSEDIFICULTY)
+			{
+				
+				displayMenuGame(w, bgMain);
+				updateMenuGame(w, &Dificulty, &gameState);
 			}
 
 			/// Gamestate - LOADING NEXT WAVE
@@ -329,7 +341,7 @@ int main() {
 							sfSound_play(sndKillEnemy);
 							scoreGame += 100;
 							scoreGameBonusLife += 100;
-							if (scoreGameBonusLife >= 10000) {
+							if (scoreGameBonusLife >= 25000) {
 								scoreGameBonusLife = 0;
 								lives += 1;
 								sfSound_play(sndLife);

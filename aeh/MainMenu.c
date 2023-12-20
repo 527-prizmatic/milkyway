@@ -23,7 +23,7 @@ sfVector2i mousePosMenu;*/
 void updateMenu(sfRenderWindow* _window, State* _selectMenu) {
 	if (testKeyPress(_window, sfKeySpace))
 	{
-		*_selectMenu = LOAD;
+		*_selectMenu = CHOOSEDIFICULTY;
 	}
 
 	if (testKeyPress(_window, sfKeyEscape))
