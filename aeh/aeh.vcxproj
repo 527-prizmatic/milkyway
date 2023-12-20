@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="difficulty.c" />
     <ClCompile Include="enemy.c" />
     <ClCompile Include="level.c" />
     <ClCompile Include="main.c" />
@@ -151,6 +152,7 @@
     <ClCompile Include="vect.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="difficulty.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="MainMenu.h" />
@@ -165,7 +167,6 @@
     <None Include="..\data\shaders\bg.frag" />
     <None Include="..\data\shaders\bulletse.frag" />
     <None Include="..\data\shaders\bulletsp.frag" />
-    <None Include="shaderProjectil.farg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

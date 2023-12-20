@@ -11,6 +11,7 @@
 #include "enemy.h"
 #include "level.h"
 #include "music.h"
+#include "difficulty.h"
 
 #define ITERATE_ALL_ENEMIES for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL)
 
@@ -30,6 +31,14 @@ int main() {
 	sfRenderWindow_setFramerateLimit(w, TICKSPEED);
 	sfImage* icon = sfImage_createFromFile(PATH_TEXTURES"enemy_2_icon.png");
 	sfRenderWindow_setIcon(w, 64, 64, sfImage_getPixelsPtr(icon));
+
+	///* == DIFFICULTIES == *///
+	Difficulty diffRecon = newDifficulty(0.5, 1, 5, 10000);
+	Difficulty diffAssault = newDifficulty(1, 1.5, 3, 25000);
+	Difficulty diffInvasion = newDifficulty(1.375, 3, 2, 50000);
+	Difficulty diffGenocide = newDifficulty(1.75, 5, 1, -1);
+
+	Difficulty* diffCurrent = &diffAssault;
 
 	///* == TEXTURE DUMP == *///
 	sfTexture* bgGalaxy = newTexture(PATH_TEXTURES"bg_galaxy.png");
@@ -190,7 +199,12 @@ int main() {
 				displayMenu(w, bgMain, PressSpace);
 				if (tickShaders % 40 < 30) sfText_setString(PressSpace, "PRESS SPACE");
 				else sfText_setString(PressSpace, " ");
-				lives = 3;
+				lives = diffCurrent->startingLives;
+
+				if (testKeyPress(w, sfKeyNum1)) diffCurrent = &diffRecon;
+				if (testKeyPress(w, sfKeyNum2)) diffCurrent = &diffAssault;
+				if (testKeyPress(w, sfKeyNum3)) diffCurrent = &diffInvasion;
+				if (testKeyPress(w, sfKeyNum4)) diffCurrent = &diffGenocide;
 			}
 
 			/// Gamestate - LOADING NEXT WAVE
@@ -267,7 +281,7 @@ int main() {
 				enemyPos.x += ENEMY_SPD / (enemyCount + 1) * TICK * 2 * (enemyMoveDir - 0.5);
 
 				ITERATE_ALL_ENEMIES {
-					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, sndShootEnemy, &rstateBulletsE);
+					enemyUpdate(enemyBuffer[i][j], w, enemyMoveDir, enemyCount, gameState, sndShootEnemy, &rstateBulletsE, *diffCurrent);
 					if (enemyBuffer[i][j]->pos.x < mapBounds.x) dirChangeFlag = -1;
 					if (enemyBuffer[i][j]->pos.x > mapBounds.y) dirChangeFlag = 1;
 
@@ -329,7 +343,7 @@ int main() {
 							sfSound_play(sndKillEnemy);
 							scoreGame += 100;
 							scoreGameBonusLife += 100;
-							if (scoreGameBonusLife >= 10000) {
+							if (diffCurrent->bonusLifeScore != -1 && scoreGameBonusLife >= diffCurrent->bonusLifeScore) {
 								scoreGameBonusLife = 0;
 								lives += 1;
 								sfSound_play(sndLife);
@@ -347,7 +361,7 @@ int main() {
 				flagCheckCollisions = 1;
 				if (enemyCount == 0) gameState = NEXT;
 
-				for (int i = 0; i < lives; i++) {
+				if (lives > 1) for (int i = 0; i < lives - 1; i++) {
 					sfSprite_setPosition(player.spr, vector2f(40., 40. + 64 * i));
 					sfRenderWindow_drawSprite(w, player.spr, NULL);
 				}
@@ -366,7 +380,7 @@ int main() {
 						enemyBuffer[i][j]->pos.x = lerp(W_WINDOW / 2, j * grid + grid * 2 + W_WINDOW / 8., (tickDeath - 40) / 40.);
 						enemyBuffer[i][j]->pos.y = lerp(H_WINDOW / 2, i * grid + grid * 2, (tickDeath - 40) / 40.);
 					}
-					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, sndShootEnemy, &rstateBulletsE);
+					enemyUpdate(enemyBuffer[i][j], w, -1, enemyCount, gameState, sndShootEnemy, &rstateBulletsE, *diffCurrent);
 				}
 				tickDeath++;
 				enemyPos.y = 2 * grid;
