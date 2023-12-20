@@ -12,6 +12,7 @@
 #include "level.h"
 #include "music.h"
 #include "difficulty.h"
+#include "GameMenu.h"
 
 #define ITERATE_ALL_ENEMIES for (int i = 0; i < 8; i++) for (int j = 0; j < 16; j++) if (enemyBuffer[i][j] != NULL)
 
@@ -173,6 +174,10 @@ int main() {
 	sfText_setScale(PressSpace, PressSpacetxtsize);
 	sfText_setPosition(PressSpace, PressSpacetxtPos);
 
+	///* == GAME MENU == *///
+	MenuJouer Dificulty = ASSAULT;
+
+
 	///***  = = =  GAME LOOP  = = =  ***///
 	while (sfRenderWindow_isOpen(w)) {
 		while (sfRenderWindow_pollEvent(w, &e));
@@ -205,6 +210,13 @@ int main() {
 				if (testKeyPress(w, sfKeyNum2)) diffCurrent = &diffAssault;
 				if (testKeyPress(w, sfKeyNum3)) diffCurrent = &diffInvasion;
 				if (testKeyPress(w, sfKeyNum4)) diffCurrent = &diffGenocide;
+			}
+
+			if (gameState == CHOOSEDIFICULTY)
+			{
+				
+				displayMenuGame(w, bgMain);
+				updateMenuGame(w, &Dificulty, &gameState);
 			}
 
 			/// Gamestate - LOADING NEXT WAVE

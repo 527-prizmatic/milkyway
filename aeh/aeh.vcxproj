@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="difficulty.c" />
     <ClCompile Include="enemy.c" />
+    <ClCompile Include="GameMenu.c" />
     <ClCompile Include="level.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="MainMenu.c" />
@@ -154,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="difficulty.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="GameMenu.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="music.h" />
