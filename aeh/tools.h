@@ -40,7 +40,7 @@ typedef enum
 	ASSAULT,
 	INVASION,
 	GENOCIDE
-}MenuJouer;
+} GameDifficulty;
 
 /// Initializes misc tools for handling time.
 void initTools();

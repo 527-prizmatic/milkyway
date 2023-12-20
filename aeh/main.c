@@ -84,6 +84,7 @@ int main() {
 	int lives = 3; // Player's current lives
 	sfVector2f oldPos = vector2f(0., 0.); // Keeps track of where the enemy formation was for the death anim's initial lerp
 	char flagCheckCollisions = 1;
+	char menuFlags = 0b00000000;
 
 	///* == SHADERS == *///
 	sfShader* shaderBulletsP = NULL;
@@ -175,7 +176,7 @@ int main() {
 	sfText_setPosition(PressSpace, PressSpacetxtPos);
 
 	///* == GAME MENU == *///
-	MenuJouer Dificulty = ASSAULT;
+	GameDifficulty diffSelector = ASSAULT;
 
 
 	///***  = = =  GAME LOOP  = = =  ***///
@@ -200,23 +201,22 @@ int main() {
 
 			/// Gamestate - MAIN MENU
 			if (gameState == MENU) {
-				updateMenu(w, &gameState);
+				updateMenu(w, &gameState, &menuFlags);
 				displayMenu(w, bgMain, PressSpace);
 				if (tickShaders % 40 < 30) sfText_setString(PressSpace, "PRESS SPACE");
 				else sfText_setString(PressSpace, " ");
-				lives = diffCurrent->startingLives;
-
-				if (testKeyPress(w, sfKeyNum1)) diffCurrent = &diffRecon;
-				if (testKeyPress(w, sfKeyNum2)) diffCurrent = &diffAssault;
-				if (testKeyPress(w, sfKeyNum3)) diffCurrent = &diffInvasion;
-				if (testKeyPress(w, sfKeyNum4)) diffCurrent = &diffGenocide;
 			}
 
-			if (gameState == CHOOSEDIFICULTY)
-			{
-				
+			if (gameState == CHOOSEDIFICULTY) {
 				displayMenuGame(w, bgMain);
-				updateMenuGame(w, &Dificulty, &gameState);
+				updateMenuGame(w, &diffSelector, &gameState, &menuFlags);
+				switch (diffSelector) {
+					case RECON: diffCurrent = &diffRecon; break;
+					case ASSAULT: diffCurrent = &diffAssault; break;
+					case INVASION: diffCurrent = &diffInvasion; break;
+					case GENOCIDE: diffCurrent = &diffGenocide; break;
+				}
+				lives = diffCurrent->startingLives;
 			}
 
 			/// Gamestate - LOADING NEXT WAVE
